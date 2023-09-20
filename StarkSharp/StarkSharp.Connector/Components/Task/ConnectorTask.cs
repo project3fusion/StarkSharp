@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace StarkSharp.RPC.Components
+namespace StarkSharp.Components.Task
 {
     public class ConnectorTask
     {

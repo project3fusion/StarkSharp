@@ -7,20 +7,12 @@ using StarkSharp.Platforms.Unity;
 
 namespace StarkSharp.Platforms.Dotnet
 {
-    public class AspNetPlatform : Platform
+    public class DotnetPlatform : Platform
     {
-
-        public static AspNetPlatform New(PlatformConnectorType platformType) => platformType switch
+        public static DotnetPlatform New(PlatformConnectorType platformType) => platformType switch
         {
             PlatformConnectorType.RPC => new DotnetRpcPlatform(),
-            _ => new AspNetPlatform()
+            _ => new DotnetPlatform()
         };
-
-       
-
-       
     }
-
-
-
 }

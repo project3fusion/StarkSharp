@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 
 using StarkSharp.Accounts;
+using StarkSharp.Components.Task;
 using StarkSharp.Platforms;
 
-using StarkSharp.Fusion.Components;
 using static StarkSharp.Platforms.Platform;
 
 

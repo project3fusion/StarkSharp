@@ -1,4 +1,4 @@
-namespace StarkSharp.RPC.Enum
+namespace StarkSharp.Components.Enum
 {
     public enum WalletType
     {

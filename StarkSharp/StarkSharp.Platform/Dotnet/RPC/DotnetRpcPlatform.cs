@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
+using StarkSharp.Components;
 using StarkSharp.Rpc;
-using StarkSharp.RPC.Components;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace StarkSharp.Platforms.Dotnet.RPC
 {
-    public class DotnetRpcPlatform : AspNetPlatform
+    public class DotnetRpcPlatform : DotnetPlatform
     {
         public async Task CallContract(List<string> callContractData, Action<string> successCallback, Action<string> errorCallback)
         {

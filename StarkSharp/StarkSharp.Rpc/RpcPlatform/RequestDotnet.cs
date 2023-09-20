@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using StarkSharp.RPC.Components;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -9,7 +8,7 @@ namespace StarkSharp.Rpc.Platforms
 {
     public class RequestDotnet
     {
-        public static async Task<JsonRpcResponse> SendPostRequest(string url, JsonRpcRequest requestData)
+        public static async Task<JsonRpcResponse> SendPostRequestDotnet(string url, JsonRpcRequest requestData)
         {
             string json = JsonConvert.SerializeObject(requestData);
 

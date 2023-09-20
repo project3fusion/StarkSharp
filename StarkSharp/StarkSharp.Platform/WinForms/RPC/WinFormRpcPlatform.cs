@@ -1,16 +1,15 @@
 ﻿using Newtonsoft.Json;
-using StarkSharp.Platforms.Cryengine;
+using StarkSharp.Components;
 using StarkSharp.Rpc;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System;
-using StarkSharp.Components;
 
-namespace StarkSharp.Platforms.CryEngine.RPC
+namespace StarkSharp.Platforms.Winforms.RPC
 {
-    public class CryEngineRpcPlatform : CryEnginePlatform
+    public class WinFormRpcPlatform : WinFormPlatform
     {
         public async Task CallContract(List<string> callContractData, Action<string> successCallback, Action<string> errorCallback)
         {
@@ -87,6 +86,5 @@ namespace StarkSharp.Platforms.CryEngine.RPC
                 }
             }
         }
-
     }
 }

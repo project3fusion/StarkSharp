@@ -2,9 +2,8 @@ using Godot;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using StarkSharp.Fusion.Components;
 using GodotArray = Godot.Collections.Array;
-
+using StarkSharp.Components.Task;
 
 namespace StarkSharp.Platforms.Godot.WebGL
 {

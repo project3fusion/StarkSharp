@@ -9,8 +9,7 @@ using StarkSharp.Rpc;
 
 using UnityEngine;
 using UnityEngine.Networking;
-
-using StarkSharp.RPC.Components;
+using StarkSharp.Components;
 
 namespace StarkSharp.Platforms.Unity.RPC
 {
