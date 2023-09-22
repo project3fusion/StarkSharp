@@ -15,8 +15,8 @@ Starksharp is a robust C# toolkit designed to seamlessly integrate C# based appl
 [<img src="https://img.shields.io/badge/Godot-3 LTS+-green">](./StarkSharp/StarkSharp.Docs/Platforms/Godot/Setup.md)
 [<img src="https://img.shields.io/badge/Unity-2020 LTS+-green">](./StarkSharp/StarkSharp.Docs/Platforms/Unity/Setup.md)
 [<img src="https://img.shields.io/badge/WinForms-5+-green">](./StarkSharp/StarkSharp.Docs/Platforms/WinForms/Setup.md) 
-<img src="https://img.shields.io/badge/Xamarin-maintanance-orange">
 
+<img src="https://img.shields.io/badge/Xamarin-maintanance-orange">
 <img src="https://img.shields.io/badge/.NET MAUI-being implemented-red">
 
 <h3>StarkSharp Elements Setup</h3>
