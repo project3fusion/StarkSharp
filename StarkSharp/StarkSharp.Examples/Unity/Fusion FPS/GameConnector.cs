@@ -8,7 +8,7 @@ public class GameConnector : Monobehaviour
 
     private void Start(){
         //Create platforms
-        GameManager.platform = UnityPlatform.New(PlatformConnectorType.Sharpion);
+        GameManager.platform = UnityPlatform.New(PlatformConnectorType.WebGL);
         GameManager.rpcPlatform = UnityPlatform.New(PlatformConnectorType.RPC);
 
         //Create connectors
