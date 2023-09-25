@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-
 using StarkSharp.Accounts;
-using StarkSharp.Components.Task;
+using StarkSharp.Connectors.Components;
 using StarkSharp.Platforms;
 
 using static StarkSharp.Platforms.Platform;

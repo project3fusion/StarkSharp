@@ -8,7 +8,7 @@ namespace StarkSharp.Rpc.Platforms
 {
     public class RequestDotnet
     {
-        public static async Task<JsonRpcResponse> SendPostRequestDotnet(string url, JsonRpcRequest requestData)
+        public static async Task<JsonRpcResponse> SendPostRequestDotnet(string url, JsonRpc requestData)
         {
             string json = JsonConvert.SerializeObject(requestData);
 
@@ -42,7 +42,7 @@ namespace StarkSharp.Rpc.Platforms
             return null;
         }
 
-        public async Task<JsonRpcResponse> SendPostRequest(JsonRpcRequest requestData)
+        public async Task<JsonRpcResponse> SendPostRequest(JsonRpc requestData)
         {
             string json = JsonConvert.SerializeObject(requestData);
 

@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Numerics;
 
-namespace StarkSharp.RPC.Utils
+namespace StarkSharp.Rpc.Utils
 {
     public static class StarknetOps
     {

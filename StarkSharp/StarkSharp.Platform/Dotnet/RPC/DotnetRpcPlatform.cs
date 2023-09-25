@@ -15,7 +15,10 @@ namespace StarkSharp.Platforms.Dotnet.RPC
         {
             if (callContractData.Count >= 3)
             {
-                var response = await SendJsonRpcRequest(callContractData[0], callContractData[1], callContractData[2]);
+
+                var requestdata = JsonRpcHandler.GenerateRequestData(callContractData[0], callContractData[1], callContractData[2]);
+                var response = await SendPostRequest(requestdata);
+
                 if (response == null || response.error != null)
                 {
                     errorCallback?.Invoke(response?.error?.message ?? "Unknown error");
@@ -31,38 +34,7 @@ namespace StarkSharp.Platforms.Dotnet.RPC
             }
         }
 
-        public async Task<JsonRpcResponse> SendJsonRpcRequest(string contractAddress, string entryPointSelector, object data)
-        {
-            string serializedData;
-            if (data is string || data is ValueType)
-            {
-                serializedData = data.ToString();
-            }
-            else
-            {
-                serializedData = JsonConvert.SerializeObject(data);
-            }
-
-            var requestData = new JsonRpcRequest
-            {
-                id = 1,
-                method = "starknet_call",
-                @params = new object[]
-                {
-                    new
-                    {
-                        contract_address = contractAddress,
-                        entry_point_selector = entryPointSelector,
-                        calldata = JsonConvert.DeserializeObject<CallDataComponent>(serializedData).callData
-                    },
-                    "latest"
-                }
-            };
-
-            return await SendPostRequest(requestData);
-        }
-
-        public async Task<JsonRpcResponse> SendPostRequest(JsonRpcRequest requestData)
+        public async Task<JsonRpcResponse> SendPostRequest(JsonRpc requestData)
         {
             string json = JsonConvert.SerializeObject(requestData);
 

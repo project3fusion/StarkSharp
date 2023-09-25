@@ -16,19 +16,19 @@ namespace StarkSharp.Rpc.Platforms
     {
 
 
-        public static async Task<JsonRpcResponse> SendPostRequestUnity(string url, JsonRpcRequest requestData) 
+        public static async Task<JsonRpcResponse> SendPostRequestUnity(JsonRpc requestData) 
         {
             string json = JsonConvert.SerializeObject(requestData);
 
             Debug.Log("JSON-RPC Request: " + json);
 
-            UnityWebRequest www = new UnityWebRequest(url, "POST");
+            UnityWebRequest www = new UnityWebRequest(Settings.Settings.apiurl, "POST");
             byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
             www.uploadHandler = new UploadHandlerRaw(bodyRaw);
             www.downloadHandler = new DownloadHandlerBuffer();
             www.SetRequestHeader("Content-Type", "application/json");
 
-            Debug.Log($"Sending POST request to {url} with data: {json}");
+            Debug.Log($"Sending POST request to {Settings.Settings.apiurl} with data: {json}");
 
             // Wrap UnityWebRequest in TaskCompletionSource to use await
             await new UnityWebRequestAwaiter(www);

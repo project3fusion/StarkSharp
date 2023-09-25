@@ -43,7 +43,7 @@ namespace StarkSharp.Platforms.Winforms.RPC
                 serializedData = JsonConvert.SerializeObject(data);
             }
 
-            var requestData = new JsonRpcRequest
+            var requestData = new JsonRpc
             {
                 id = 1,
                 method = "starknet_call",
@@ -62,7 +62,7 @@ namespace StarkSharp.Platforms.Winforms.RPC
             return await SendPostRequest(requestData);
         }
 
-        public async Task<JsonRpcResponse> SendPostRequest(JsonRpcRequest requestData)
+        public async Task<JsonRpcResponse> SendPostRequest(JsonRpc requestData)
         {
             string json = JsonConvert.SerializeObject(requestData);
 

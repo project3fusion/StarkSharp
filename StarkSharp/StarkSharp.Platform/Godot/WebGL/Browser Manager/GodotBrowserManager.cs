@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using GodotArray = Godot.Collections.Array;
-using StarkSharp.Components.Task;
+using StarkSharp.Connectors.Components;
 
 namespace StarkSharp.Platforms.Godot.WebGL
 {

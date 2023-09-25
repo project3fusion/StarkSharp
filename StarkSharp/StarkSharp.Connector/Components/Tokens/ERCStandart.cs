@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using StarkSharp.RPC.Utils;
+using StarkSharp.Rpc.Utils;
 
 
 namespace StarkSharp.Components.Token

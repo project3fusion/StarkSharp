@@ -3,7 +3,7 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 
 
-namespace StarkSharp.RPC.Utils
+namespace StarkSharp.Rpc.Utils
 {
     public class NumericOps
     {

@@ -9,7 +9,7 @@ using StarkSharp.Rpc;
 
 using UnityEngine;
 using UnityEngine.Networking;
-using StarkSharp.Components;
+
 
 namespace StarkSharp.Platforms.Unity.RPC
 {
@@ -22,7 +22,9 @@ namespace StarkSharp.Platforms.Unity.RPC
         {
             if (callContractData.Count >= 3)
             {
-                mb.StartCoroutine(SendJsonRpcRequest(callContractData[0], callContractData[1], callContractData[2], (response) =>
+
+                var requestdata = JsonRpcHandler.GenerateRequestData(callContractData[0], callContractData[1], callContractData[2]);
+                mb.StartCoroutine(SendPostRequestUnity(requestdata, (response) =>
                 {
                     if (response == null || response.error != null)
                     {
@@ -41,38 +43,9 @@ namespace StarkSharp.Platforms.Unity.RPC
         }
 
 
-        public static IEnumerator SendJsonRpcRequest(string contractAddress, string entryPointSelector, object data, Action<JsonRpcResponse> callback)
-        {
-            string serializedData;
-            if (data is string || data is ValueType)
-            {
-                serializedData = data.ToString();
-            }
-            else
-            {
-                serializedData = JsonConvert.SerializeObject(data);
-            }
+       
 
-            var requestData = new JsonRpcRequest
-            {
-                id = 1,
-                method = "starknet_call",
-                @params = new object[]
-                {
-                    new
-                    {
-                        contract_address = contractAddress,
-                        entry_point_selector = entryPointSelector,
-                        calldata = JsonConvert.DeserializeObject<CallDataComponent>(serializedData).callData
-                    },
-                    "latest"
-                }
-            };
-
-            yield return SendPostRequestUnity(requestData, callback);
-        }
-
-        public static IEnumerator SendPostRequestUnity(JsonRpcRequest requestData, Action<JsonRpcResponse> callback)
+        public static IEnumerator SendPostRequestUnity(JsonRpc requestData, Action<JsonRpcResponse> callback)
         {
             string json = JsonConvert.SerializeObject(requestData);
 
