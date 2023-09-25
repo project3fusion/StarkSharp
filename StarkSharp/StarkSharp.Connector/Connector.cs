@@ -34,11 +34,11 @@ namespace StarkSharp.Connectors
             ConnectorWaitUntil(id, successCallback, failCallback, ConnectorEventPredicate(id));
         }
 
-        public virtual void SendTransaction(List<string> sendTransactionData, Action<string> successCallback, Action<string> failCallback)
+        public virtual void SendTransaction(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> failCallback)
         {
             int id = ConnectorTask.CreateNewTask();
 
-            ConnectorSendTransaction(id, sendTransactionData[0], sendTransactionData[1], sendTransactionData[2]);
+            ConnectorSendTransaction(id, contractInteraction.ContractAdress, contractInteraction.EntryPoint, contractInteraction.CallData);
 
             ConnectorWaitUntil(id, successCallback, failCallback, ConnectorEventPredicate(id));
         }
