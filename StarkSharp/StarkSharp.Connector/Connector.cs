@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using StarkSharp.Accounts;
-using StarkSharp.Connector.Components;
 using StarkSharp.Connectors.Components;
 using StarkSharp.Platforms;
 

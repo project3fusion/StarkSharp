@@ -1,4 +1,4 @@
-namespace StarkSharp.Components
+namespace StarkSharp.Connectors.Components
 {
     public enum WalletType
     {

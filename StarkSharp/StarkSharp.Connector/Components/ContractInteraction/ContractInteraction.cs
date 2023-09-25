@@ -1,7 +1,7 @@
 ﻿using StarkSharp.Rpc.Utils;
-using System.Collections.Generic;
 
-namespace StarkSharp.Connector.Components
+
+namespace StarkSharp.Connectors.Components
 {
     public class ContractInteraction
     {
