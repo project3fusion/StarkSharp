@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using StarkSharp.Accounts;
+using StarkSharp.Connector.Components;
 using StarkSharp.Connectors.Components;
 using StarkSharp.Platforms;
 
@@ -42,11 +43,11 @@ namespace StarkSharp.Connectors
             ConnectorWaitUntil(id, successCallback, failCallback, ConnectorEventPredicate(id));
         }
 
-        public virtual void CallContract(List<string> callContractData, Action<string> successCallback, Action<string> failCallback)
+        public virtual void CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> failCallback)
         {
             int id = ConnectorTask.CreateNewTask();
 
-            ConnectorCallContract(id, callContractData[0], callContractData[1], callContractData[2], successCallback, failCallback);
+            ConnectorCallContract(id, contractInteraction.ContractAdress, contractInteraction.EntryPoint, contractInteraction.CallData, successCallback, failCallback);
 
             ConnectorWaitUntil(id, successCallback, failCallback, ConnectorEventPredicate(id));
         }

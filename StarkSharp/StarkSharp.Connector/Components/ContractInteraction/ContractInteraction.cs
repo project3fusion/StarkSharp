@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StarkSharp.Rpc.Utils;
+using System.Collections.Generic;
 
 namespace StarkSharp.Connector.Components
 {
@@ -11,14 +12,9 @@ namespace StarkSharp.Connector.Components
         public ContractInteraction(string _ContractAdress, string _EntryPoint , string _CallData) {
 
             ContractAdress = _ContractAdress;
-            EntryPoint = _EntryPoint;
+            EntryPoint = StarknetOps.CalculateFunctionSelector(_EntryPoint);
             CallData = _CallData;
 
         }
-
-        public string GenerateEntryPointHex(string entryPointName) => entryPointName;
-
-        public List<string> GetParameters() => new List<string>() { ContractAdress, EntryPoint, CallData };
-
     }
 }
