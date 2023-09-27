@@ -11,7 +11,6 @@ namespace StarkSharp.Platforms.Unity.Sharpion
             manager = SharpionManager.New(PlatformName.Unity);
         }
 
-
         public override void ConnectWallet(string walletType, int id)
         {
             manager.ConnectWallet();
@@ -21,11 +20,5 @@ namespace StarkSharp.Platforms.Unity.Sharpion
         {
             manager.SendTransaction();
         }
-
-        public void Test()
-        {
-
-        }
-
     }
 }
