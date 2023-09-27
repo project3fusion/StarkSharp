@@ -42,9 +42,6 @@ namespace StarkSharp.Platforms.Unity.RPC
             }
         }
 
-
-       
-
         public static IEnumerator SendPostRequestUnity(JsonRpc requestData, Action<JsonRpcResponse> callback)
         {
             string json = JsonConvert.SerializeObject(requestData);
