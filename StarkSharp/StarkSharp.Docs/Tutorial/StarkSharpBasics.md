@@ -110,10 +110,12 @@ connector.CallContract(
 If you want to send a custom query, here is the code
 
 ```
+ContractInteraction myContract = new ContractInteraction(_ContractAdress, _EntryPoint, _CallData);
 connector.CallContract(
-    new List<string> { contractAddress, entryPoint, callDataJson },
-    (successMessage) => OnCallContractSuccess(successMessage),
-    (errorMessage) => OnCallContractError(errorMessage));
+       myContract,
+       (successMessage) => OnCallContractSuccess(successMessage),
+       (errorMessage) => OnCallContractError(errorMessage)
+    );
 ```
 
 <h4>7. You are Ready to Go!</h4>
