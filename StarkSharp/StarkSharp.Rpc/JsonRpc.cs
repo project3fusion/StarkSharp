@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using StarkSharp.Tools.Notification;
 
 namespace StarkSharp.Rpc
 {
@@ -39,36 +39,40 @@ namespace StarkSharp.Rpc
 
     public class JsonRpcHandler
     {
-        public static JsonRpc GenerateRequestData(string contractAddress, string entryPointSelector, object data)
+        public static JsonRpc GenerateRequestData(string contractAddress, string entryPointSelector, string serializedData)
         {
-            string serializedData;
-            if (data is string || data is ValueType)
+            try
             {
-                serializedData = data.ToString();
-            }
-            else
-            {
-                serializedData = JsonConvert.SerializeObject(data);
-            }
+                // serializedData'nın zaten bir JSON dizisi olup olmadığını kontrol et ve dizi olarak çözümle
+                JArray deserializedData = serializedData.StartsWith("[") && serializedData.EndsWith("]") ?
+                                          JArray.Parse(serializedData) :
+                                          new JArray(serializedData);
 
-            var requestData = new JsonRpc
-            {
-                id = 1,
-                method = "starknet_call",
-                @params = new object[]
+                var requestData = new JsonRpc
                 {
+                    id = 1,
+                    method = "starknet_call",
+                    @params = new object[]
+                    {
                 new
                 {
                     contract_address = contractAddress,
                     entry_point_selector = entryPointSelector,
-                    calldata = new string[] { serializedData }
+                    calldata = deserializedData // Dizi olarak atandı
                 },
                 "latest"
-                }
-            };
+                    }
+                };
 
-            return requestData;
+                return requestData;
+            }
+            catch (Exception ex)
+            {
+                Notify.ShowNotification($"Error generating request data: {ex.Message}", NotificationType.Error, NotificationPlatform.Console);
+                return null;
+            }
         }
+
     }
 
 }

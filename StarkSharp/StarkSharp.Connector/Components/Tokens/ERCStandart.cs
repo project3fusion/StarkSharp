@@ -8,9 +8,10 @@ namespace StarkSharp.Components.Token
     {
         public static ContractInteraction GenerateStandartData(string contractAddress, string entryPoint, string[] callData)
         {
-            string callDataString = JsonConvert.SerializeObject(new CallDataComponent { callData = callData });
-            return new ContractInteraction ( contractAddress, entryPoint, callDataString );
+            string callDataString = JsonConvert.SerializeObject(callData);
+            return new ContractInteraction(contractAddress, entryPoint, callDataString);
         }
+
 
     }
 }

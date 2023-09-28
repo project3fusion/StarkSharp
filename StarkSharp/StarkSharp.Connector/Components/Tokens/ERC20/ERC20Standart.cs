@@ -1,6 +1,5 @@
 using StarkSharp.Accounts;
 using StarkSharp.Connectors.Components;
-using System.Collections.Generic;
 
 namespace StarkSharp.Components.Token.ERC20
 {

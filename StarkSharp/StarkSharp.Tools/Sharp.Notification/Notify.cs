@@ -14,7 +14,8 @@ namespace StarkSharp.Tools.Notification
     public enum NotificationPlatform
     {
         DotNet,
-        Unity
+        Unity,
+        Console
     }
 
     public class Notify

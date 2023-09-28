@@ -7,16 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System;
 using StarkSharp.Components;
+using StarkSharp.Connectors.Components;
 
 namespace StarkSharp.Platforms.CryEngine.RPC
 {
     public class CryEngineRpcPlatform : CryEnginePlatform
     {
-        public async Task CallContract(List<string> callContractData, Action<string> successCallback, Action<string> errorCallback)
+        public override async void CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> errorCallback)
         {
-            if (callContractData.Count >= 3)
+            if (contractInteraction != null)
             {
-                var response = await SendJsonRpcRequest(callContractData[0], callContractData[1], callContractData[2]);
+                var response = await SendJsonRpcRequest(contractInteraction.ContractAdress, contractInteraction.EntryPoint, contractInteraction.CallData);
                 if (response == null || response.error != null)
                 {
                     errorCallback?.Invoke(response?.error?.message ?? "Unknown error");
@@ -44,7 +45,7 @@ namespace StarkSharp.Platforms.CryEngine.RPC
                 serializedData = JsonConvert.SerializeObject(data);
             }
 
-            var requestData = new JsonRpcRequest
+            var requestData = new JsonRpc
             {
                 id = 1,
                 method = "starknet_call",
@@ -63,7 +64,7 @@ namespace StarkSharp.Platforms.CryEngine.RPC
             return await SendPostRequest(requestData);
         }
 
-        public async Task<JsonRpcResponse> SendPostRequest(JsonRpcRequest requestData)
+        public async Task<JsonRpcResponse> SendPostRequest(JsonRpc requestData)
         {
             string json = JsonConvert.SerializeObject(requestData);
 

@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+
 using StarkSharp.Accounts;
 using StarkSharp.Connectors.Components;
 using StarkSharp.Platforms;
@@ -21,7 +21,7 @@ namespace StarkSharp.Connectors
         {
             account = new Account();
             this.platform = platform;
-   
+
         }
 
         public virtual void ConnectWallet(WalletType walletType, Action<string> successCallback, Action<string> failCallback)
@@ -46,7 +46,7 @@ namespace StarkSharp.Connectors
         {
             int id = ConnectorTask.CreateNewTask();
 
-            ConnectorCallContract(id, contractInteraction.ContractAdress, contractInteraction.EntryPoint, contractInteraction.CallData, successCallback, failCallback);
+            ConnectorCallContract(id, contractInteraction, successCallback, failCallback);
 
             ConnectorWaitUntil(id, successCallback, failCallback, ConnectorEventPredicate(id));
         }
@@ -61,11 +61,9 @@ namespace StarkSharp.Connectors
 
         public virtual void ConnectorSendTransaction(int id, string contractAddress, string entryPoint, string callData) => platform.SendTransaction(walletType.ToString(), id, contractAddress, entryPoint, callData);
 
-        public virtual void ConnectorCallContract(int id ,string contractAddress, string entryPoint, string callData, Action<string> successCallback, Action<string> failCallback)
+        public virtual void ConnectorCallContract(int id, ContractInteraction contractInteraction, Action<string> successCallback, Action<string> failCallback)
         {
-            List<string> callDataList = new List<string> { contractAddress, entryPoint, callData };
-
-            platform.CallContract(callDataList,
+            platform.CallContract(contractInteraction,
                                   message => ConnectorOnCallContractSucceeded(successCallback, message),
                                   message => ConnectorOnCallContractFailed(failCallback, message));
         }

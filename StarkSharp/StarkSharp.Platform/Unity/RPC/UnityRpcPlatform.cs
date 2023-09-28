@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using System.Collections;
-using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
@@ -9,7 +8,7 @@ using StarkSharp.Rpc;
 
 using UnityEngine;
 using UnityEngine.Networking;
-
+using StarkSharp.Connectors.Components;
 
 namespace StarkSharp.Platforms.Unity.RPC
 {
@@ -18,12 +17,12 @@ namespace StarkSharp.Platforms.Unity.RPC
     {
         MonoBehaviour mb = new GameObject("TempCoroutineObject").AddComponent<TempCoroutineMonoBehaviour>();
 
-        public override void CallContract(List<string> callContractData, Action<string> successCallback, Action<string> errorCallback)
+        public override void CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> errorCallback)
         {
-            if (callContractData.Count >= 3)
+            if (contractInteraction !=  null)
             {
 
-                var requestdata = JsonRpcHandler.GenerateRequestData(callContractData[0], callContractData[1], callContractData[2]);
+                var requestdata = JsonRpcHandler.GenerateRequestData(contractInteraction.ContractAdress, contractInteraction.EntryPoint, contractInteraction.CallData);
                 mb.StartCoroutine(SendPostRequestUnity(requestdata, (response) =>
                 {
                     if (response == null || response.error != null)

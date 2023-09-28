@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using StarkSharp.Components;
+using StarkSharp.Connectors.Components;
 using StarkSharp.Rpc;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,12 @@ namespace StarkSharp.Platforms.Dotnet.RPC
 {
     public class DotnetRpcPlatform : DotnetPlatform
     {
-        public async Task CallContract(List<string> callContractData, Action<string> successCallback, Action<string> errorCallback)
+        public async Task CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> errorCallback)
         {
-            if (callContractData.Count >= 3)
+            if (contractInteraction != null)
             {
 
-                var requestdata = JsonRpcHandler.GenerateRequestData(callContractData[0], callContractData[1], callContractData[2]);
+                var requestdata = JsonRpcHandler.GenerateRequestData(contractInteraction.ContractAdress,contractInteraction.EntryPoint,contractInteraction.CallData);
                 var response = await SendPostRequest(requestdata);
 
                 if (response == null || response.error != null)

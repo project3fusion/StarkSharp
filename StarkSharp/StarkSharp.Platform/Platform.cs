@@ -1,6 +1,7 @@
 ﻿
+using StarkSharp.Connectors.Components;
 using System;
-using System.Collections.Generic;
+
 
 namespace StarkSharp.Platforms
 {
@@ -12,7 +13,7 @@ namespace StarkSharp.Platforms
 
         public virtual void ConnectWallet(string walletType, int id) { }
         public virtual void SendTransaction(string walletType, int id, string contractAddress, string entryPoint, string callData) { }
-        public virtual void CallContract(List<string> callContractData, Action<string> successCallback, Action<string> errorCallback) { }
+        public virtual void CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> errorCallback) { }
 
         public virtual void WaitUntil(int id, Action<string> successCallback, Action<string> failCallback, Func<bool> predicate, Action<int, Action<string>, Action<string>> action) { }
         public virtual bool CheckWalletConnection() { return true; }
