@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.IO;
 using UnityEditor;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 
 
@@ -128,7 +127,7 @@ namespace StarkSharp.Unity.Resources
                         continousCheck = false;
                         continousCheckInterval = 0;
                         debugging = false;
-                        CreateScript("","", "", false, 0, false);
+                        CreateScript("", "", "", false, 0, false);
                     }
 
                     if (GUILayout.Button("Save", GUILayout.Width(100)))
@@ -147,7 +146,7 @@ namespace StarkSharp.Unity.Resources
         private void CreateScript(string apiURL, string webSocketURL, string webSocketWebsiteDomain, bool continousCheck, float continousCheckInterval, bool transactionDebugging)
         {
             // Ensure directory exists
-            string dirPath = Application.dataPath + "/StarkSharp/StarkSharp.Resources/StarkSharp.Unity.Settings/";
+            string dirPath = Application.dataPath + "/StarkSharp/StarkSharp.Resources/";
             if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 
             string scriptPath = dirPath + "Settings.cs";
@@ -155,7 +154,7 @@ namespace StarkSharp.Unity.Resources
             {
                 sw.WriteLine("namespace StarkSharp.Settings {");
                 sw.WriteLine("    public class Settings {");
-                sw.WriteLine($"        public static string apiurl = \"{apiURL}\";"); 
+                sw.WriteLine($"        public static string apiurl = \"{apiURL}\";");
                 sw.WriteLine($"        public static string webSocketWebsiteDomain = \"{webSocketWebsiteDomain}\";");
                 sw.WriteLine($"        public static string webSocketipandport = \"{webSocketURL}\";");
                 sw.WriteLine($"        public static bool continousCheck = {continousCheck.ToString().ToLower()};");
@@ -163,7 +162,7 @@ namespace StarkSharp.Unity.Resources
                 sw.WriteLine($"        public static bool transactionDebugging = {transactionDebugging.ToString().ToLower()};");
                 sw.WriteLine("    }");
                 sw.WriteLine("}");
-    }
+            }
 
             AssetDatabase.Refresh(); // Ensure the script is recognized by Unity immediately.
             EditorUtility.DisplayDialog("Success", "Settings saved!", "Ok");
