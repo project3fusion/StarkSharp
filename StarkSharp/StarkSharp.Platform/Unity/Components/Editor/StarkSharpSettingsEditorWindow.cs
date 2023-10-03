@@ -128,13 +128,13 @@ namespace StarkSharp.Unity.Resources
                         continousCheck = false;
                         continousCheckInterval = 0;
                         debugging = false;
-                        CreateScript("", "", false, 0, false);
+                        CreateScript("","", "", false, 0, false);
                     }
 
                     if (GUILayout.Button("Save", GUILayout.Width(100)))
                     {
                         if (apiURL == "" && webSocketURL == "" && continousCheck == false && continousCheck == false && debugging == false) DisplayMessage();
-                        else CreateScript(apiURL, webSocketURL, continousCheck, continousCheck ? continousCheckInterval : 0.5f, debugging);
+                        else CreateScript(apiURL, webSocketURL, webSocketWebsiteDomain, continousCheck, continousCheck ? continousCheckInterval : 0.5f, debugging);
                     }
                 }
                 GUILayout.EndHorizontal();  // End horizontal group
@@ -144,7 +144,7 @@ namespace StarkSharp.Unity.Resources
             EditorGUILayout.Space(3);
         }
 
-        private void CreateScript(string apiURL, string webSocketURL, bool continousCheck, float continousCheckInterval, bool transactionDebugging)
+        private void CreateScript(string apiURL, string webSocketURL, string webSocketWebsiteDomain, bool continousCheck, float continousCheckInterval, bool transactionDebugging)
         {
             // Ensure directory exists
             string dirPath = Application.dataPath + "/StarkSharp/StarkSharp.Resources/StarkSharp.Unity.Settings/";
@@ -156,8 +156,8 @@ namespace StarkSharp.Unity.Resources
                 sw.WriteLine("namespace StarkSharp.Settings {");
                 sw.WriteLine("    public class Settings {");
                 sw.WriteLine($"        public static string apiurl = \"{apiURL}\";"); 
-                sw.WriteLine($"        public static string webSocketWebsiteDomain = \"{webSocketWebsiteDomain}\";");
-                sw.WriteLine($"        public static string webSocketipandport = \"{webSocketURL}\";");
+                sw.WriteLine($"        public static string webSocketipadress = \"{webSocketWebsiteDomain}\";");
+                sw.WriteLine($"        public static string webSocketipadress = \"{webSocketURL}\";");
                 sw.WriteLine($"        public static bool continousCheck = {continousCheck.ToString().ToLower()};");
                 sw.WriteLine($"        public static float continousCheckInterval = {continousCheckInterval.ToString("F2", CultureInfo.InvariantCulture)}f;");
                 sw.WriteLine($"        public static bool transactionDebugging = {transactionDebugging.ToString().ToLower()};");
