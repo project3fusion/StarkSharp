@@ -156,14 +156,14 @@ namespace StarkSharp.Unity.Resources
                 sw.WriteLine("namespace StarkSharp.Settings {");
                 sw.WriteLine("    public class Settings {");
                 sw.WriteLine($"        public static string apiurl = \"{apiURL}\";"); 
-                sw.WriteLine($"        public static string webSocketipadress = \"{webSocketWebsiteDomain}\";");
-                sw.WriteLine($"        public static string webSocketipadress = \"{webSocketURL}\";");
+                sw.WriteLine($"        public static string webSocketWebsiteDomain = \"{webSocketWebsiteDomain}\";");
+                sw.WriteLine($"        public static string webSocketipandport = \"{webSocketURL}\";");
                 sw.WriteLine($"        public static bool continousCheck = {continousCheck.ToString().ToLower()};");
                 sw.WriteLine($"        public static float continousCheckInterval = {continousCheckInterval.ToString("F2", CultureInfo.InvariantCulture)}f;");
                 sw.WriteLine($"        public static bool transactionDebugging = {transactionDebugging.ToString().ToLower()};");
                 sw.WriteLine("    }");
                 sw.WriteLine("}");
-            }
+    }
 
             AssetDatabase.Refresh(); // Ensure the script is recognized by Unity immediately.
             EditorUtility.DisplayDialog("Success", "Settings saved!", "Ok");
