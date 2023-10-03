@@ -156,7 +156,7 @@ namespace StarkSharp.Unity.Resources
                 sw.WriteLine("namespace StarkSharp.Settings {");
                 sw.WriteLine("    public class Settings {");
                 sw.WriteLine($"        public static string apiurl = \"{apiURL}\";"); 
-                sw.WriteLine($"        public static string webSocketipadress = \"{webSocketWebsiteDomain}\";");
+                sw.WriteLine($"        public static string webSocketWebsite = \"{webSocketWebsiteDomain}\";");
                 sw.WriteLine($"        public static string webSocketipadress = \"{webSocketURL}\";");
                 sw.WriteLine($"        public static bool continousCheck = {continousCheck.ToString().ToLower()};");
                 sw.WriteLine($"        public static float continousCheckInterval = {continousCheckInterval.ToString("F2", CultureInfo.InvariantCulture)}f;");
