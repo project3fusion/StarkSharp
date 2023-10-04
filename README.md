@@ -5,7 +5,7 @@ Starksharp is a robust C# toolkit designed to seamlessly integrate C# based appl
 <h3>About</h3>
 
 [<img src="https://img.shields.io/badge/Version-0.3-green">](https://starksharp.com)
-[<img src="https://img.shields.io/badge/Join-Telegram-blue">](https://t.me/+upblWZH-8NU3ZTk0)
+[<img src="https://img.shields.io/badge/Join-Telegram-blue">](https://t.me/starksharp)
 
 <h3>Supported platforms</h3>
 
@@ -16,7 +16,6 @@ Starksharp is a robust C# toolkit designed to seamlessly integrate C# based appl
 [<img src="https://img.shields.io/badge/Unity-2020 LTS+-green">](./StarkSharp/StarkSharp.Docs/Platforms/Unity/Setup.md)
 [<img src="https://img.shields.io/badge/WinForms-5+-green">](./StarkSharp/StarkSharp.Docs/Platforms/WinForms/Setup.md) 
 
-<img src="https://img.shields.io/badge/Xamarin-maintanance-orange">
 <img src="https://img.shields.io/badge/.NET MAUI-being implemented-red">
 
 <h3>StarkSharp Elements Setup</h3>
@@ -26,10 +25,7 @@ Click to badges on [Supported Platforms](./#starksharp-elements-setup) for setup
 <h3>Get Started</h3>
 
 [<img src="https://img.shields.io/badge/Docs-StarkSharp Basics-red">](./StarkSharp/StarkSharp.Docs/Tutorial/StarkSharpBasics.md)
-
-<h3>Advanced Examples</h3>
-
-Will be added soon.
+[<img src="https://img.shields.io/badge/Example-StarkSharp Examples-red">](./StarkSharp/StarkSharp.Examples)
 
 <h3>Supported Features</h3>
 
