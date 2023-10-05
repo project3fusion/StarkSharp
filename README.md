@@ -37,12 +37,15 @@ More features coming soon.
 
 ### Contributors
 
+Thanks to these amazing people for their contributions.
+
 <table>
   <tbody>
     <tr>
       <td align="center" valign="top" width="25%"><a href="https://github.com/lastceri"><img src="https://avatars.githubusercontent.com/u/125711498?v=4" width="125px;" alt="lastceri"/><br/><b>lastceri</b></a><br/>Developer</td>
       <td align="center" valign="top" width="25%"><a href="https://github.com/sektor7k"><img src="https://avatars.githubusercontent.com/u/76495441?v=4" width="125px;" alt="sektor7k"/><br/><b>sektor7k</b></a><br/>Developer</td>
       <td align="center" valign="top" width="25%"><a href="https://github.com/cannsky"><img src="https://avatars.githubusercontent.com/u/44663880?v=4" width="125px;" alt="cannsky"/><br/><b>cannsky</b></a><br />Developer</td>
+      <td align="center" valign="top" width="25%"><a href="https://github.com/jelilat"><img src="https://avatars.githubusercontent.com/u/23613565?v=4" width="125px;" alt="jelilat"/><br/><b>jelilat</b></a><br />Developer</td>
     </tr>
   </tbody>
 </table>
