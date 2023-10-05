@@ -146,23 +146,23 @@ namespace StarkSharp.Unity.Resources
         private void CreateScript(string apiURL, string webSocketURL, string webSocketWebsiteDomain, bool continousCheck, float continousCheckInterval, bool transactionDebugging)
         {
             // Ensure directory exists
-            string dirPath = Application.dataPath + "/StarkSharp/StarkSharp.Resources/";
+            string dirPath = Application.dataPath + "/StarkSharp/StarkSharp.Resources/Settings/";
             if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 
             string scriptPath = dirPath + "Settings.cs";
-            using (StreamWriter sw = File.CreateText(scriptPath))
-            {
-                sw.WriteLine("namespace StarkSharp.Settings {");
-                sw.WriteLine("    public class Settings {");
-                sw.WriteLine($"        public static string apiurl = \"{apiURL}\";");
-                sw.WriteLine($"        public static string webSocketWebsiteDomain = \"{webSocketWebsiteDomain}\";");
-                sw.WriteLine($"        public static string webSocketipandport = \"{webSocketURL}\";");
-                sw.WriteLine($"        public static bool continousCheck = {continousCheck.ToString().ToLower()};");
-                sw.WriteLine($"        public static float continousCheckInterval = {continousCheckInterval.ToString("F2", CultureInfo.InvariantCulture)}f;");
-                sw.WriteLine($"        public static bool transactionDebugging = {transactionDebugging.ToString().ToLower()};");
-                sw.WriteLine("    }");
-                sw.WriteLine("}");
-            }
+            string newSettings = $@"
+                namespace StarkSharp.Settings {{
+                    public class Settings {{
+                        public static string apiurl = ""{apiURL}"";
+                        public static string webSocketWebsiteDomain = ""{webSocketWebsiteDomain}"";
+                        public static string webSocketipandport = ""{webSocketURL}"";
+                        public static bool continousCheck = {continousCheck.ToString().ToLower()};
+                        public static float continousCheckInterval = {continousCheckInterval.ToString("F2", CultureInfo.InvariantCulture)}f;
+                        public static bool transactionDebugging = {transactionDebugging.ToString().ToLower()};
+                    }}
+                }}";
+
+            File.WriteAllText(scriptPath, newSettings);
 
             AssetDatabase.Refresh(); // Ensure the script is recognized by Unity immediately.
             EditorUtility.DisplayDialog("Success", "Settings saved!", "Ok");
