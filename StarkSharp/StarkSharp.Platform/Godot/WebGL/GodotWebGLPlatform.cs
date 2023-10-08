@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace StarkSharp.Platforms.Godot.WebGL
 {
     public class GodotWebGLPlatform : GodotPlatform

@@ -5,15 +5,6 @@ using StarkSharp.Tools.Notification;
 
 namespace StarkSharp.Rpc
 {
-    public enum RpcPlatform
-    {
-        Unity,
-        DotNet,
-        Godot,
-        CryEngine,
-        AspNet
-    }
-
     public class JsonRpc
     {
         public string jsonrpc { get; } = "2.0";
@@ -47,7 +38,6 @@ namespace StarkSharp.Rpc
                 JArray deserializedData = serializedData.StartsWith("[") && serializedData.EndsWith("]") ?
                                           JArray.Parse(serializedData) :
                                           new JArray(serializedData);
-
                 var requestData = new JsonRpc
                 {
                     id = 1,
@@ -72,7 +62,5 @@ namespace StarkSharp.Rpc
                 return null;
             }
         }
-
     }
-
 }

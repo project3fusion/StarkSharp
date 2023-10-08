@@ -15,6 +15,8 @@ namespace StarkSharp.Tools.Notification
     {
         DotNet,
         Unity,
+        Godot,
+        CryEngine,
         Console
     }
 

@@ -1,9 +1,6 @@
-
-
 namespace StarkSharp.Settings
 {
     public static class Settings {
-
         public static string apiurl = ""; 
         public static string webSocketipandport = "";
         public static string webSocketWebsiteDomain = "";

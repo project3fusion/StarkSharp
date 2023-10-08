@@ -1,7 +1,5 @@
-﻿
-using StarkSharp.Connectors.Components;
+﻿using StarkSharp.Connectors.Components;
 using System;
-
 
 namespace StarkSharp.Platforms
 {
@@ -9,7 +7,6 @@ namespace StarkSharp.Platforms
     {
         public enum PlatformName { CryEngine, Unity, Godot, Dotnet }
         public enum PlatformConnectorType { WebGL, Sharpion, HTML5,RPC }
-
 
         public virtual void ConnectWallet(string walletType, int id) { }
         public virtual void SendTransaction(string walletType, int id, string contractAddress, string entryPoint, string callData) { }
@@ -20,5 +17,4 @@ namespace StarkSharp.Platforms
         public virtual string GetAccountInformation() { return string.Empty; }
         public virtual void DebugMessage(string message) { }
     }
-
 }

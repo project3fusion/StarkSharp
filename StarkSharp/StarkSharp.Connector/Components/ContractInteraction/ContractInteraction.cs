@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using StarkSharp.Rpc.Utils;
 
-
 namespace StarkSharp.Connectors.Components
 {
     public class ContractInteraction

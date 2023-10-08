@@ -6,10 +6,8 @@ using StarkSharp.Platforms;
 
 using static StarkSharp.Platforms.Platform;
 
-
 namespace StarkSharp.Connectors
 {
-
     public class Connector
     {
         public Account account;
@@ -67,7 +65,6 @@ namespace StarkSharp.Connectors
                                   message => ConnectorOnCallContractSucceeded(successCallback, message),
                                   message => ConnectorOnCallContractFailed(failCallback, message));
         }
-
 
         public virtual bool ConnectorCheckWalletConnectionStatus() => platform.CheckWalletConnection();
 

@@ -1,5 +1,4 @@
-﻿
-using StarkSharp.Platforms.CryEngine.RPC;
+﻿using StarkSharp.Platforms.CryEngine.RPC;
 
 namespace StarkSharp.Platforms.Cryengine
 {

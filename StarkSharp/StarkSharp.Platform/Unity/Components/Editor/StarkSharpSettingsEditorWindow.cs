@@ -3,10 +3,8 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-
 namespace StarkSharp.Unity.Resources
 {
-
     public class StarkSharpSettingsEditorWindow : EditorWindow
     {
         private int connectorType = 0;

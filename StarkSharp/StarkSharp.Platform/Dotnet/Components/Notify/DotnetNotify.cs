@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace StarkSharp.Tools.Notification.NotifyPlatform
 {
     public class DotnetNotify : Notify

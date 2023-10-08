@@ -16,7 +16,6 @@ namespace StarkSharp.Platforms.Dotnet.RPC
         {
             if (contractInteraction != null)
             {
-
                 var requestdata = JsonRpcHandler.GenerateRequestData(contractInteraction.ContractAdress,contractInteraction.EntryPoint,contractInteraction.CallData);
                 var response = await SendPostRequest(requestdata);
 

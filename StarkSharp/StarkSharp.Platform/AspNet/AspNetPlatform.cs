@@ -7,6 +7,5 @@
             PlatformConnectorType.RPC => new AspNetRPCController(),
             _ => new AspNetPlatform()
         };
-
     }
 }

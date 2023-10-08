@@ -4,5 +4,4 @@
     {
         public string[] callData { get; set; }
     }
-
 }

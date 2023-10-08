@@ -1,5 +1,4 @@
-﻿
-using StarkSharp.Platforms.Winforms.RPC;
+﻿using StarkSharp.Platforms.Winforms.RPC;
 
 namespace StarkSharp.Platforms.Winforms
 {

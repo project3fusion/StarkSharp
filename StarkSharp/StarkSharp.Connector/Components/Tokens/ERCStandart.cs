@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
 using StarkSharp.Connectors.Components;
 
-
 namespace StarkSharp.Components.Token
 {
     public class ERCStandart
@@ -11,7 +10,5 @@ namespace StarkSharp.Components.Token
             string callDataString = JsonConvert.SerializeObject(callData);
             return new ContractInteraction(contractAddress, entryPoint, callDataString);
         }
-
-
     }
 }

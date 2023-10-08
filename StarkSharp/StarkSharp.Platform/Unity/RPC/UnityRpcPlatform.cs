@@ -3,12 +3,11 @@ using System.Text;
 using System.Collections;
 
 using Newtonsoft.Json;
-
+using StarkSharp.Connectors.Components;
 using StarkSharp.Rpc;
 
 using UnityEngine;
 using UnityEngine.Networking;
-using StarkSharp.Connectors.Components;
 
 namespace StarkSharp.Platforms.Unity.RPC
 {
@@ -21,7 +20,6 @@ namespace StarkSharp.Platforms.Unity.RPC
         {
             if (contractInteraction !=  null)
             {
-
                 var requestdata = JsonRpcHandler.GenerateRequestData(contractInteraction.ContractAdress, contractInteraction.EntryPoint, contractInteraction.CallData);
                 mb.StartCoroutine(SendPostRequestUnity(requestdata, (response) =>
                 {

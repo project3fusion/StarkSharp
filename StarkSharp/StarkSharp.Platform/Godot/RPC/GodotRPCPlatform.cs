@@ -29,8 +29,6 @@ namespace StarkSharp.Platforms.Godot.RPC
             }
         }
 
-        
-
         public static void SendPostRequestGodot(JsonRpc requestData, GodotRPCRequestNode newGodotRPCRequestNode)
         {
             string json = JsonConvert.SerializeObject(requestData);

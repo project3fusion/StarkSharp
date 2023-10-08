@@ -11,14 +11,11 @@ using StarkSharp.Settings;
 
 public class AspNetRPCController : AspNetPlatform
 {
-
     public override async void CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> errorCallback)
     {
         if (contractInteraction != null)
         {
             var RequestData = JsonRpcHandler.GenerateRequestData(contractInteraction.ContractAdress, contractInteraction.EntryPoint, contractInteraction.CallData);
-
-
             var response = await SendPostRequest(RequestData);
             if (response == null || response.error != null)
             {
@@ -59,5 +56,4 @@ public class AspNetRPCController : AspNetPlatform
             }
         }
     }
-
 }

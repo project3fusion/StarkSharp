@@ -12,7 +12,6 @@ namespace StarkSharp.Platforms.Unity.WebGL
         public override void SendTransaction(string walletType, int id, string contractAddress, string entryPoint, string callData)
             => UnityBrowserManager.SendTransaction(walletType, id, contractAddress, entryPoint, callData, "BrowserManager", "RecieveMessage");
 
-
         public override bool CheckWalletConnection()
             => UnityBrowserManager.CheckWalletConnection();
 

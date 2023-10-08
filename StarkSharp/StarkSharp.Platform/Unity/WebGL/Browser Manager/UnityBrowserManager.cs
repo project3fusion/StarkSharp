@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace StarkSharp.Platforms.Unity.WebGL
 {
-
     public class UnityBrowserManager : MonoBehaviour
     {
         public static UnityBrowserManager Instance;
@@ -24,10 +23,8 @@ namespace StarkSharp.Platforms.Unity.WebGL
         [DllImport("__Internal")]
         public static extern void SendTransaction(string walletType, int id, string contractAddress, string entryPoint, string callData, string callbackObjectName, string callbackMethodName);
 
-
         private void Awake() => DontDestroyOnLoad(Instance = this);
 
         public void RecieveMessage(string data) => ConnectorTask.RecieveMessage(data);
     }
-
 }
