@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StarkSharp.StarkSharp.Base.StarkSharp.Net
+namespace StarkSharp.Base.Net
 {
     public class NetEnum
     {

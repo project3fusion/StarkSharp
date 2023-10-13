@@ -1,7 +1,7 @@
 ﻿using System;
-using static StarkSharp.StarkSharp.Base.StarkSharp.Net.NetEnum;
+using static StarkSharp.Base.Net.NetEnum;
 
-namespace StarkSharp.StarkSharp.Base.StarkSharp.Net
+namespace StarkSharp.Base.Net
 {
     public static class NetErrors
     {

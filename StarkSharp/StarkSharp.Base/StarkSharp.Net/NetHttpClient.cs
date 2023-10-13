@@ -1,71 +1,137 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StarkSharp.StarkSharp.Base.StarkSharp.Net
+namespace StarkSharp.Base.Net
 {
     public class NetHttpClient
     {
-        public enum HttpMethod
-        {
-            GET,
-            POST
-        }
-
         public abstract class HttpClientBase
         {
-            protected string Url { get; }
-            protected HttpClient Session { get; }
+            protected readonly HttpClient _client;
 
-            protected HttpClientBase(string url, HttpClient session = null)
+            public HttpClientBase(string url)
             {
-                Url = url;
-                Session = session ?? new HttpClient();
+                _client = new HttpClient { BaseAddress = new Uri(url) };
             }
 
-            public async Task<string> Request(string address, HttpMethod httpMethod, Dictionary<string, string> parameters = null, string payload = null)
+            public async Task<T> Request<T>(
+                HttpMethod method,
+                string path,
+                Dictionary<string, string>? parameters = null,
+                object? payload = null
+            )
             {
-                HttpResponseMessage response;
+                var uri = new Uri(_client.BaseAddress, path);
+                HttpContent content;
 
-                switch (httpMethod)
+                if (payload != null)
                 {
-                    case HttpMethod.GET:
-                        response = await Session.GetAsync(address);
-                        break;
-                    case HttpMethod.POST:
-                        response = await Session.PostAsync(address, new StringContent(payload));
-                        break;
-                    default:
-                        throw new NotImplementedException();
+                    content = new StringContent(JsonConvert.SerializeObject(payload), System.Text.Encoding.UTF8, "application/json");
+                }
+                else
+                {
+                    content = new FormUrlEncodedContent(parameters ?? new Dictionary<string, string>());
                 }
 
-                await HandleRequestError(response);
-                return await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = method == HttpMethod.Post
+                    ? await _client.PostAsync(uri, content)
+                    : await _client.GetAsync(uri); // Consider adding support for other HTTP methods
+
+                if (response.StatusCode >= System.Net.HttpStatusCode.MultipleChoices) // Status code 300 and above
+                {
+                    throw new ClientError((int)response.StatusCode, await response.Content.ReadAsStringAsync());
+                }
+
+                return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
             }
 
-            protected abstract Task HandleRequestError(HttpResponseMessage response);
+            public abstract Task<T> HandleRequestError<T>(HttpResponseMessage response);
+        }
+
+        public class GatewayHttpClient : HttpClientBase
+        {
+            public GatewayHttpClient(string url) : base(url) { }
+
+            public async Task<T> Call<T>(string method, Dictionary<string, string>? parameters = null)
+            {
+                return await Request<T>(HttpMethod.Get, method, parameters);
+            }
+
+            public async Task<T> Post<T>(string method, object? payload = null, Dictionary<string, string>? parameters = null)
+            {
+                return await Request<T>(HttpMethod.Post, method, parameters, payload);
+            }
+
+            protected override async Task<T> HandleRequestError<T>(HttpResponseMessage response)
+            {
+                throw new ClientError((int)response.StatusCode, await response.Content.ReadAsStringAsync());
+            }
+        }
+
+        public class RpcHttpClient : HttpClientBase
+        {
+            public RpcHttpClient(string url) : base(url) { }
+
+            public async Task<T> Call<T>(string method, Dictionary<string, object> parameters)
+            {
+                var payload = new Dictionary<string, object>
+            {
+                {"jsonrpc", "2.0"},
+                {"method", method},
+                {"params", parameters},
+                {"id", 0},
+            };
+
+                var response = await Request<Dictionary<string, object>>(HttpMethod.Post, "/jsonrpc", payload: payload);
+
+                if (!response.ContainsKey("result"))
+                {
+                    HandleRpcError(response);
+                }
+
+                return (T)response["result"];
+            }
+
+            protected override async Task<T> HandleRequestError<T>(HttpResponseMessage response)
+            {
+                var responseBody = JsonConvert.DeserializeObject<Dictionary<string, object>>(await response.Content.ReadAsStringAsync());
+
+                if (!responseBody.ContainsKey("error"))
+                {
+                    throw new ServerError(responseBody);
+                }
+
+                throw new ClientError((int)responseBody["error"]["code"], (string)responseBody["error"]["message"]);
+            }
+
+            private void HandleRpcError(Dictionary<string, object> response)
+            {
+                throw new ClientError((int)response["error"]["code"], (string)response["error"]["message"]);
+            }
         }
 
         public class ClientError : Exception
         {
-            public ClientError(string message, string code) : base(message)
+            public ClientError(int code, string message) : base(message)
             {
                 Code = code;
             }
 
-            public string Code { get; }
+            public int Code { get; }
         }
 
         public class ServerError : Exception
         {
-            public ServerError(string message, Dictionary<string, object> body) : base(message)
+            public ServerError(Dictionary<string, object> response) : base((string)response["message"])
             {
-                Body = body;
+                Response = response;
             }
 
-            public Dictionary<string, object> Body { get; }
+            public Dictionary<string, object> Response { get; }
         }
     }
 }
