@@ -1,89 +1,109 @@
 ﻿using System;
 using System.Collections.Generic;
-using static StarkSharp.StarkSharp.Base.StarkSharp.Net.NetEnum;
+using System.Threading.Tasks;
 
 
-namespace StarkSharp.StarkSharp.Base.StarkSharp.Net
+namespace StarkSharp.Base.Net
 {
     public class NetClient
     {
-       
+        public abstract NetNetworks net { get; }
 
-        public class Call
+        public abstract StarknetBlock GetBlock(Hash? blockHash = null, int? blockNumber = null);
+
+        public abstract BlockTransactionTraces TraceBlockTransactions(Hash? blockHash = null, int? blockNumber = null);
+
+        public abstract BlockStateUpdate GetStateUpdate(Hash? blockHash = null, int? blockNumber = null);
+
+        public abstract int GetStorageAt(Hash contractAddress, int key, Hash? blockHash = null, int? blockNumber = null);
+
+        public abstract Transaction GetTransaction(Hash txHash);
+
+        public abstract TransactionReceipt GetTransactionReceipt(Hash txHash);
+
+        public async Task<TransactionReceipt> WaitForTx(Hash txHash, bool? waitForAccept = null, float checkInterval = 2, int retries = 500)
         {
-            public int ToAddr { get; set; }
-            public int Selector { get; set; }
-            public List<int> Calldata { get; set; }
-            public CallType Type { get; set; }
-            public int Block { get; set; }
-            public Tag Tag { get; set; }
+            if (checkInterval <= 0)
+                throw new ArgumentException("Argument check_interval has to be greater than 0.");
+            if (retries <= 0)
+                throw new ArgumentException("Argument retries has to be greater than 0.");
+            if (waitForAccept is not null)
+                warnings.warn("Parameter `wait_for_accept` has been deprecated - since Starknet 0.12.0, transactions in a PENDING"
+    
+                             " block have status ACCEPTED_ON_L2.");
+
+            while (true)
+            {
+                try
+                {
+                    TransactionReceipt txReceipt = await this.GetTransactionReceipt(txHash);
+
+                    var deprecatedStatus = _statusToFinalityExecution(txReceipt.status);
+                    var finalityStatus = txReceipt.finalityStatus ?? deprecatedStatus[0];
+                    var executionStatus = txReceipt.executionStatus ?? deprecatedStatus[1];
+
+                    if (executionStatus == TransactionExecutionStatus.REJECTED)
+                        throw new TransactionRejectedError(message: txReceipt.rejectionReason);
+
+                    if (executionStatus == TransactionExecutionStatus.REVERTED)
+                        throw new TransactionRevertedError(message: txReceipt.revertError);
+
+                    if (executionStatus == TransactionExecutionStatus.SUCCEEDED)
+                        return txReceipt;
+
+                    if (finalityStatus in (TransactionFinalityStatus.ACCEPTED_ON_L2, TransactionFinalityStatus.ACCEPTED_ON_L1))
+                    return txReceipt;
+
+                    retries -= 1;
+                    if (retries == 0)
+                        throw new TransactionNotReceivedError();
+
+                    await Task.Delay(checkInterval);
+                }
+                catch (TaskCanceledException ex)
+                {
+                    throw new TransactionNotReceivedError();
+                }
+                catch (ClientError ex)
+                {
+                    if ("Transaction hash not found" != ex.message)
+                        throw ex;
+                    retries -= 1;
+                    if (retries == 0)
+                        throw new TransactionNotReceivedError();
+
+                    await Task.Delay(checkInterval);
+                }
+            }
         }
 
-      
+        public abstract EstimatedFee EstimateFee(AccountTransaction tx, Hash? blockHash = null, int? blockNumber = null);
 
-        public class Event
+        public abstract List<int> CallContract(Call call, Hash? blockHash = null, int? blockNumber = null);
+
+        public async Task<SentTransactionResponse> SendTransaction(Invoke transaction)
         {
-            public EventType Type { get; set; }
-            public int FromAddress { get; set; }
-            public List<int> Keys { get; set; }
-            public List<int> Data { get; set; }
+            return await this._sendTransaction(transaction);
         }
 
-        public class EventsChunk
-        {
-            public List<Event> Events { get; set; }
-            public string ContinuationToken { get; set; }
-        }
+        public abstract DeployAccountTransactionResponse DeployAccount(DeployAccount transaction);
 
-     
+        public abstract DeclareTransactionResponse Declare(Declare transaction);
 
-        public class L1toL2Message
-        {
-            public List<int> Payload { get; set; }
-            public int Nonce { get; set; }
-            public int Selector { get; set; }
-            public int L1Address { get; set; }
-            public int L2Address { get; set; }
-            public L1toL2Type Type { get; set; }
-        }
+        public abstract int GetClassHashAt(Hash contractAddress, Hash? blockHash = null, int? blockNumber = null);
 
-       
+        public abstract Task<int> GetClassHashAt(Hash contractAddress, Hash? blockHash = null, int? blockNumber = null);
 
-        public abstract class Transaction
-        {
-            public int? Hash { get; set; }
-            public List<int> Signature { get; set; }
-            public int MaxFee { get; set; }
-            public int Version { get; set; }
-            public TransactionType Type { get; set; }
-        }
+        public abstract Task<ContractClass> GetContractClassAt(Hash contractAddress, Hash? blockHash = null, int? blockNumber = null);
 
-        public class InvokeTransaction : Transaction
-        {
-            public int SenderAddress { get; set; }
-            public List<int> Calldata { get; set; }
-            public int? EntryPointSelector { get; set; }
-            public int? Nonce { get; set; }
-        }
+        public abstract Task<ContractClass> GetContractClassByHash(Hash classHash);
 
-        public class DeclareTransaction : Transaction
-        {
-            // Ek özellikler buraya eklenmelidir
-        }
+        public abstract Task<SierraContractClass> GetSierraContractClassAt(Hash contractAddress, Hash? blockHash = null, int? blockNumber = null);
 
-        public class DeployAccountTransaction : Transaction
-        {
-            // Ek özellikler buraya eklenmelidir
-        }
+        public abstract Task<SierraContractClass> GetSierraContractClassByHash(Hash classHash);
 
-        public class DeployTransaction : Transaction
-        {
-            // Ek özellikler buraya eklenmelidir
-        }
+        protected abstract Task<SentTransactionResponse> _sendTransaction(Invoke transaction);
 
-        public class L1HandlerTransaction : Transaction
-        {
-            // Ek özellikler buraya eklenmelidir
-        }
+
     }
 }

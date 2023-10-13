@@ -5,7 +5,7 @@ namespace StarkSharp.StarkSharp.Base.StarkSharp.Net
 {
     public static class NetErrors
     {
-        public const string CLIENT_ERROR_CODE = "SomeErrorCode"; // Örnek hata kodu. İhtiyacınıza göre değiştirebilirsiniz.
+        public const string CLIENT_ERROR_CODE = "SomeErrorCode";
     }
 
     public class ClientError : Exception
