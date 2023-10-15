@@ -16,8 +16,6 @@ Starksharp is a robust C# toolkit designed to seamlessly integrate C# based appl
 [<img src="https://img.shields.io/badge/Unity-2020 LTS+-green">](./StarkSharp/StarkSharp.Docs/Platforms/Unity/Setup.md)
 [<img src="https://img.shields.io/badge/WinForms-5+-green">](./StarkSharp/StarkSharp.Docs/Platforms/WinForms/Setup.md) 
 
-<img src="https://img.shields.io/badge/.NET MAUI-being implemented-red">
-
 <h3>StarkSharp Elements Setup</h3>
 
 Click to badges on [Supported Platforms](./#starksharp-elements-setup) for setup instructions.
@@ -25,7 +23,11 @@ Click to badges on [Supported Platforms](./#starksharp-elements-setup) for setup
 <h3>Get Started</h3>
 
 [<img src="https://img.shields.io/badge/Docs-StarkSharp Basics-red">](./StarkSharp/StarkSharp.Docs/Tutorial/StarkSharpBasics.md)
-[<img src="https://img.shields.io/badge/Example-StarkSharp Examples-red">](./StarkSharp/StarkSharp.Examples)
+
+<h3>Examples</h3>
+
+[<img src="https://img.shields.io/badge/Example-Unity MOBA Game-blue">](https://github.com/project3fusion/StarkMOBA)
+[<img src="https://img.shields.io/badge/Example-Unity FPS Game-blue">](https://github.com/project3fusion/FusionFPS)
 
 <h3>Supported Features</h3>
 
