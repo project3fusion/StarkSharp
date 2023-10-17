@@ -32,7 +32,8 @@ Click to badges on [Supported Platforms](./#starksharp-elements-setup) for setup
 <h3>Supported Features</h3>
 
 - JSON RPC
-- Websocket Wallet Connection (Being optimized, will be added soon.)
+- Stark Curve Signer
+- Websocket Wallet Connection (Sharpion)
 - Web Wallet Connection
 
 More features coming soon.
