@@ -12,6 +12,8 @@ using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Math;
 using BouncyBigInt = Org.BouncyCastle.Math.BigInteger;
 using BigInt = System.Numerics.BigInteger;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace StarkSharp.StarkCurve.Signature
 {
@@ -39,7 +41,7 @@ namespace StarkSharp.StarkCurve.Signature
 
     public static class ECDSA
     {
-        private const string PedersenHashPointFilename = "StarkSharp.StarkCurve/pedersen_params.json";
+        private const string PedersenHashPointFilename = "StarkSharp.Signer/StarkCurveSigner/pedersen_params.json";
 
         // Load the parameters from pedersen_params.json
         private static readonly StarkCurveParameters PedersenParams = JsonConvert.DeserializeObject<StarkCurveParameters>(
