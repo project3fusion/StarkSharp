@@ -1,33 +1,34 @@
 using System;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
+using static StarkSharp.Fusion.Sharpion.Dotnet.Handlers.Enum;
+using static StarkSharp.Fusion.Sharpion.Dotnet.Handlers.Packs;
 
-using UnityEngine;
-
-using static StarkSharp.Fusion.Sharpion.Unity.Handlers.Enum;
-using static StarkSharp.Fusion.Sharpion.Unity.Handlers.Packs;
-
-namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
+namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
 {
-    public class Handler : MonoBehaviour
+    public class Handler
     {
         public static async Task HandShake(string datahandjson)
         {
             try
             {
-                Packet handshakepacket = JsonUtility.FromJson<Packet>(datahandjson);
+                Console.WriteLine("Data From Server (HandShake): " + datahandjson);
+
+                Packet handshakepacket = JsonConvert.DeserializeObject<Packet>(datahandjson);
+
                 switch (handshakepacket.type)
                 {
                     case (int)ClientEnum.Login:
-                        await HandleLoginPacketAsync(JsonUtility.FromJson<LoginPacket>(datahandjson));
+                        await HandleLoginPacketAsync(JsonConvert.DeserializeObject<LoginPacket>(datahandjson));
                         break;
                     case (int)ClientEnum.WalletPack:
-                        await HandleConnectionPacketAsync(JsonUtility.FromJson<WalletPack>(datahandjson));
+                        await HandleConnectionPacketAsync(JsonConvert.DeserializeObject<ConnectionWalletPack>(datahandjson));
                         break;
                     case (int)ClientEnum.Balance:
-                        await HandleBalancePacketAsync(JsonUtility.FromJson<BalancePacket>(datahandjson));
+                        await HandleBalancePacketAsync(JsonConvert.DeserializeObject<BalancePacket>(datahandjson));
                         break;
                     case (int)ClientEnum.Transaction:
-                        await HandleTransactionPacketAsync(JsonUtility.FromJson<TransactionPacket>(datahandjson));
+                        await HandleTransactionPacketAsync(JsonConvert.DeserializeObject<TransactionPacket>(datahandjson));
                         break;
                     default:
                         break;
@@ -35,43 +36,50 @@ namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
             }
             catch (Exception ex)
             {
-                Debug.LogError("Error in HandShake: " + ex.Message);
+                Console.WriteLine("Error in HandShake: " + ex.Message);
             }
         }
         public static async Task HandleLoginPacketAsync(LoginPacket loginPacket)
         {
+            // Check for null packets to avoid NullReferenceException.
             if (loginPacket == null)
             {
-                Debug.LogError("Received a null login packet in HandleLoginPacketAsync.");
+                Console.WriteLine("Received a null login packet in HandleLoginPacketAsync.");
                 return;
             }
             try
             {
+                // Check if user is logged in.
                 if (loginPacket.islog)
                 {
-                    Debug.Log($"Login Data From Server: {loginPacket.SocketID}, {loginPacket.message}, {loginPacket.auth} ,{loginPacket.message} ,{loginPacket.packetid}");
+                    Console.WriteLine($"Login Data From Server: {loginPacket.message}");
+                    // Additional logic for logged-in user can be placed here.
                 }
+                // Check if user is authenticated (e.g., connected their wallet).
                 else if (loginPacket.auth)
                 {
-                    Debug.Log($"Login Data From Server (User Connected Wallet): {loginPacket.message}");
+                    Console.WriteLine($"Login Data From Server (User Connected Wallet): {loginPacket.message}");
+                    // Additional logic for authenticated user can be placed here.
                 }
+                // Handle other cases.
                 else
                 {
-                    Debug.Log($"Login Data From Server: {loginPacket.message}");
+                    Console.WriteLine($"Login Data From Server: {loginPacket.message}");
                     return;
                 }
             }
+            // Catch any unexpected errors during processing.
             catch (Exception ex)
             {
-                Debug.LogError($"Error processing the login packet in HandleLoginPacketAsync: {ex.Message}");
+                Console.WriteLine($"Error processing the login packet in HandleLoginPacketAsync: {ex.Message}");
             }
         }
-        public static async Task HandleConnectionPacketAsync(WalletPack connectionPacket)
+        public static async Task HandleConnectionPacketAsync(ConnectionWalletPack connectionPacket)
         {
             // Safeguard against null packets to prevent potential NullReferenceException.
             if (connectionPacket == null)
             {
-                Debug.LogError("Received a null connection packet in HandleConnectionPacketAsync.");
+                Console.WriteLine("Received a null connection packet in HandleConnectionPacketAsync.");
                 return;
             }
             try
@@ -79,15 +87,16 @@ namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
                 // If a public wallet address is provided, process it.
                 if (!string.IsNullOrEmpty(connectionPacket.PublicWallet))
                 {
-                    Debug.Log($"Player Wallet Address: {connectionPacket.PublicWallet}");
+                    Console.WriteLine($"Player Wallet Address: {connectionPacket.PublicWallet}");
+
                     // Update the user's wallet address in the Socket instance.
-                    Socket.instance.UserWalletAddress = connectionPacket.PublicWallet;
+                    Client.instance.UserWalletAddress = connectionPacket.PublicWallet;
                 }
             }
             // Catch any unexpected errors during packet processing.
             catch (Exception ex)
             {
-                Debug.LogError($"Error processing the connection packet in HandleConnectionPacketAsync: {ex.Message}");
+                Console.WriteLine($"Error processing the connection packet in HandleConnectionPacketAsync: {ex.Message}");
             }
         }
         public static async Task HandleBalancePacketAsync(BalancePacket balancePacket)
@@ -95,7 +104,7 @@ namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
             // Safeguard against null packets to prevent potential NullReferenceException.
             if (balancePacket == null)
             {
-                Debug.LogError("Received a null balance packet in HandleBalancePacketAsync.");
+                Console.WriteLine("Received a null balance packet in HandleBalancePacketAsync.");
                 return;
             }
             try
@@ -103,15 +112,15 @@ namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
                 // If an Ethereum balance is provided, process it.
                 if (!string.IsNullOrEmpty(balancePacket.BalanceOfEth))
                 {
-                    Debug.Log($"Player's Ethereum Balance: {balancePacket.BalanceOfEth}");
+                    Console.WriteLine($"Player's Ethereum Balance: {balancePacket.BalanceOfEth}");
                     // Update the user's Ethereum balance in the Socket instance.
-                    Socket.instance.UserBalanceOfEth = balancePacket.BalanceOfEth;
+                    Client.instance.UserBalanceOfEth = balancePacket.BalanceOfEth;
                 }
             }
             // Catch any unexpected errors during packet processing.
             catch (Exception ex)
             {
-                Debug.LogError($"Error processing the balance packet in HandleBalancePacketAsync: {ex.Message}");
+                Console.WriteLine($"Error processing the balance packet in HandleBalancePacketAsync: {ex.Message}");
             }
         }
         public static async Task HandleTransactionPacketAsync(TransactionPacket transactionPacket)
@@ -119,7 +128,7 @@ namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
             // Safeguard against null packets to prevent potential NullReferenceException.
             if (transactionPacket == null)
             {
-                Debug.LogError("Received a null transaction packet in HandleTransactionPacketAsync.");
+                Console.WriteLine("Received a null transaction packet in HandleTransactionPacketAsync.");
                 return;
             }
             try
@@ -127,13 +136,13 @@ namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
                 // If a transaction status message is provided, log it.
                 if (!string.IsNullOrEmpty(transactionPacket.TransactionStatusMessage))
                 {
-                    Debug.Log($"Player Transaction Status: {transactionPacket.TransactionStatusMessage}");
+                    Console.WriteLine($"Player Transaction Status: {transactionPacket.TransactionStatusMessage}");
                 }
             }
             // Catch any unexpected errors during packet processing.
             catch (Exception ex)
             {
-                Debug.LogError($"Error processing the transaction packet in HandleTransactionPacketAsync: {ex.Message}");
+                Console.WriteLine($"Error processing the transaction packet in HandleTransactionPacketAsync: {ex.Message}");
             }
         }
     }
