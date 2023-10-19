@@ -17,7 +17,7 @@ namespace StarkSharp.Rpc
     {
         public string jsonrpc { get; set; }
         public int id { get; set; }
-        public List<string> result { get; set; }
+        public object result { get; set; }
         public JsonRpcError error { get; set; }
     }
 
