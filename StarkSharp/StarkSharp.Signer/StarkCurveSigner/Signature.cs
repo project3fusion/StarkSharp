@@ -454,8 +454,9 @@ namespace StarkSharp.StarkCurve.Signature
             for (int i = 0; i < elements.Length; i++)
             {
                 point = PedersenHashAsPoint(point.X, elements[i]);
-                Console.WriteLine(point.X);
             }
+            BigInt length = new(elements.Length);
+            point = PedersenHashAsPoint(point.X, length);
 
             return point.X;
         }
