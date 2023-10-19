@@ -22,7 +22,7 @@ Click to badges on [Supported Platforms](./#starksharp-elements-setup) for setup
 
 <h3>Get Started</h3>
 
-[<img src="https://img.shields.io/badge/Docs-StarkSharp Basics-red">](./StarkSharp/StarkSharp.Docs/Tutorial/StarkSharpBasics.md)
+[<img src="https://img.shields.io/badge/Docs-StarkSharp Basics-red">](https://github.com/project3fusion/StarkSharp/wiki)
 
 <h3>Examples</h3>
 
