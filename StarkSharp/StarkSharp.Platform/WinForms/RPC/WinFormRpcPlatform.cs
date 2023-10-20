@@ -1,17 +1,16 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using StarkSharp.Components;
+using StarkSharp.Connectors.Components;
+using StarkSharp.Rpc;
+using System;
 
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-using Newtonsoft.Json;
-using StarkSharp.Components;
-using StarkSharp.Connectors.Components;
-using StarkSharp.Rpc;
-
 namespace StarkSharp.Platforms.Winforms.RPC
 {
-    public class WinFormRpcPlatform : WinFormPlatform
+    public class WinFormRpcPlatform : WinFormsPlatform
     {
         public override async void CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> errorCallback)
         {
@@ -44,6 +43,7 @@ namespace StarkSharp.Platforms.Winforms.RPC
             {
                 serializedData = JsonConvert.SerializeObject(data);
             }
+
             var requestData = new JsonRpc
             {
                 id = 1,
@@ -62,6 +62,7 @@ namespace StarkSharp.Platforms.Winforms.RPC
 
             return await SendPostRequest(requestData);
         }
+
         public async Task<JsonRpcResponse> SendPostRequest(JsonRpc requestData)
         {
             string json = JsonConvert.SerializeObject(requestData);

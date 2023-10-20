@@ -1,18 +1,25 @@
-﻿using System;
-using StarkSharp.Platforms.Dotnet.RPC;
-using StarkSharp.Platforms.Unity.RPC;
-using StarkSharp.Platforms.Unity.Sharpion;
-using StarkSharp.Platforms.Unity.WebGL;
-using StarkSharp.Platforms.Unity;
+﻿using StarkSharp.Platforms.Dotnet.RPC;
 
 namespace StarkSharp.Platforms.Dotnet
 {
     public class DotnetPlatform : Platform
     {
-        public static DotnetPlatform New(PlatformConnectorType platformType) => platformType switch
+        public static DotnetPlatform New(PlatformConnectorType platformType)
         {
-            PlatformConnectorType.RPC => new DotnetRpcPlatform(),
-            _ => new DotnetPlatform()
-        };
+            DotnetPlatform platform;
+
+            switch (platformType)
+            {
+                case PlatformConnectorType.RPC:
+                    platform = new DotnetRpcPlatform();
+                    break;
+                default:
+                    platform = new DotnetPlatform();
+                    break;
+            }
+
+            return platform;
+        }
+
     }
 }

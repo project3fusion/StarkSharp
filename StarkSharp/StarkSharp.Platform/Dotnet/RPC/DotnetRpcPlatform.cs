@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json;
-using StarkSharp.Components;
+﻿using System;
+using Newtonsoft.Json;
 using StarkSharp.Connectors.Components;
 using StarkSharp.Rpc;
-using System;
-using System.Collections.Generic;
+
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ namespace StarkSharp.Platforms.Dotnet.RPC
 {
     public class DotnetRpcPlatform : DotnetPlatform
     {
-        public async Task CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> errorCallback)
+        public override async void CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> errorCallback)
         {
             if (contractInteraction != null)
             {
