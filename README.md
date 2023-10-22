@@ -4,12 +4,12 @@ Starksharp is a robust C# toolkit designed to seamlessly integrate C# based appl
 
 <h3>About</h3>
 
-[<img src="https://img.shields.io/badge/Version-0.3-green">](https://starksharp.com)
+[<img src="https://img.shields.io/badge/Version-0.4-green">](https://starksharp.com)
 [<img src="https://img.shields.io/badge/Join-Telegram-blue">](https://t.me/starksharp)
 
 <h3>Supported platforms</h3>
 
-[<img src="https://img.shields.io/badge/.NET-4+-green">](./StarkSharp/StarkSharp.Docs/Platforms/DotNet/Setup.md)
+[<img src="https://img.shields.io/badge/.NET-4.5+-green">](./StarkSharp/StarkSharp.Docs/Platforms/DotNet/Setup.md)
 [<img src="https://img.shields.io/badge/ASP.NET-6+-green">](./StarkSharp/StarkSharp.Docs/Platforms/ASP.Net/Setup.md)
 [<img src="https://img.shields.io/badge/CryEngine-5.7+-green">](./StarkSharp/StarkSharp.Docs/Platforms/CryEngine/Setup.md)
 [<img src="https://img.shields.io/badge/Godot-3 LTS+-green">](./StarkSharp/StarkSharp.Docs/Platforms/Godot/Setup.md)
@@ -22,7 +22,7 @@ Click to badges on [Supported Platforms](./#starksharp-elements-setup) for setup
 
 <h3>Get Started</h3>
 
-[<img src="https://img.shields.io/badge/Docs-StarkSharp Basics-red">](https://github.com/project3fusion/StarkSharp/wiki)
+[<img src="https://img.shields.io/badge/Docs-StarkSharp Wiki-red">](https://github.com/project3fusion/StarkSharp/wiki)
 
 <h3>Examples</h3>
 
