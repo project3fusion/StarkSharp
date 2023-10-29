@@ -51,7 +51,7 @@ namespace StarkSharp.Platforms.Dotnet.RPC
                 Transaction transaction = new Transaction(platform);
                 var requestData = transaction.CreateTransaction(transactionInteraction);
 
-                var response = await SendPostRequest(requestData); // Assuming SendPostRequestUnity is similar to SendPostRequest
+                var response = await SendPostRequest(requestData);
                 transaction.OnNonceComplete(platform, transactionInteraction, response);
             }
             catch (Exception ex)
@@ -63,7 +63,7 @@ namespace StarkSharp.Platforms.Dotnet.RPC
             }
         }
 
-        public async Task PlatformRequestAsync(JsonRpc requestData, Action<JsonRpcResponse> Callback)
+        public async Task PlatformRequest(JsonRpc requestData, Action<JsonRpcResponse> Callback)
         {
             if (requestData == null)
             {
@@ -93,8 +93,7 @@ namespace StarkSharp.Platforms.Dotnet.RPC
                     }
                     else
                     {
-                        // This might need to be changed as Debug.Log is Unity-specific.
-                        // You can use Console.WriteLine or any other logging mechanism you prefer.
+
                         Console.WriteLine(requestData);
                     }
                 }

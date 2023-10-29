@@ -126,7 +126,7 @@ namespace StarkSharp.Rpc
                     signature = _signature,
                     version = _version,
                     max_fee = _maxfee,
-                    calldata = deserializedData.ToObject<string[]>() // JArray'ı string dizisine dönüştürdük
+                    calldata = deserializedData.ToObject<string[]>()
                     }
                 }
                 };
