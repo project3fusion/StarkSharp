@@ -2,7 +2,6 @@ using System;
 using System.Numerics;
 using System.Collections.Generic;
 using BouncyBigInt = Org.BouncyCastle.Math.BigInteger;
-using UnityEngine;
 
 namespace StarkSharp.StarkCurve.Utils
 {

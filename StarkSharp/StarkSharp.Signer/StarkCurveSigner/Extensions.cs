@@ -1,7 +1,5 @@
 using System;
 using System.Numerics;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Crypto.Macs;
 using Org.BouncyCastle.Crypto;

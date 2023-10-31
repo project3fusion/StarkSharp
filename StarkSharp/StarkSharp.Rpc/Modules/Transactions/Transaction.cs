@@ -94,8 +94,8 @@ namespace StarkSharp.Rpc.Modules.Transactions
                     };
 
 
-                    _platform.PlatformRequest(requestData, response =>
-                        OnEstimateFeeComplete(platform, response)
+                    _platform.PlatformRequest(requestData, rpcresponse =>
+                        OnEstimateFeeComplete(platform, rpcresponse)
                     );
                 }
                 else
@@ -154,8 +154,8 @@ namespace StarkSharp.Rpc.Modules.Transactions
                     method = "starknet_addInvokeTransaction",
                     @params = new object[] { new { type = "INVOKE", sender_address = _senderAddress, calldata = _calldata, max_fee = maxFee, version = "0x1", signature = new string[] { r, s }, nonce = _nonce } }
                 };
-                _platform.PlatformRequest(requestData, response =>
-                                OnTransactionSendComplete(platform, response)
+                _platform.PlatformRequest(requestData, rpcresponse =>
+                                OnTransactionSendComplete(platform, rpcresponse)
                             );
             }
             catch (Exception ex)

@@ -288,7 +288,7 @@ namespace StarkSharp.StarkCurve.Signature
             MathUtils.ECPoint result = shiftPoint;
             for (int i = 0; i < NElementBitsEcdsa; i++)
             {
-                PreventInvalidOperation(result, point);
+                PreventInvalidOperation(result, point);  
 
                 if (IsBitSet(m, 0))
                     result = MathUtils.ECAdd(result, point, FieldPrime);

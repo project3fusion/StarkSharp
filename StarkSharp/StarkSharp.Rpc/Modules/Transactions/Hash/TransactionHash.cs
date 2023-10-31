@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
-using UnityEngine;
 
 namespace StarkSharp.Rpc.Modules.Transactions.Hash
 {
