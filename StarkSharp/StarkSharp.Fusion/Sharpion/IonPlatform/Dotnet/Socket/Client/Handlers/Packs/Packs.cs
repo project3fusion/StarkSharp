@@ -1,7 +1,7 @@
 ﻿using StarkSharp.Connectors.Components;
 using System;
 using System.Numerics;
-using static StarkSharp.Fusion.Sharpion.Unity.Handlers.Enum;
+using static StarkSharp.Fusion.Sharpion.Dotnet.Handlers.Enum;
 
 namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
 {

@@ -16,15 +16,23 @@ namespace StarkSharp.Fusion.Sharpion.Manager
 
         public static SharpionManager New(PlatformName name)
         {
-            IonPlatform platform = name switch
+            IonPlatform platform;
+
+            switch (name)
             {
-                PlatformName.Unity => new IonUnity(),
-                PlatformName.Dotnet => new IonDotnet(),
-                _ => throw new NotSupportedException($"Platform '{name}' is not supported.")
-            };
+                case PlatformName.Dotnet:
+                    platform = new IonDotnet();
+                    break;
+                case PlatformName.Unity:
+                    platform = new IonUnity();
+                    break;
+                default:
+                    throw new NotSupportedException($"Platform '{name}' is not supported.");
+            }
 
             return new SharpionManager(platform);
         }
+
 
         public virtual void ConnectToServer() { IonPlatform.ConnectToServer(); }
         public virtual void DisconnectToServer() { IonPlatform.DisconnectToServer(); }
