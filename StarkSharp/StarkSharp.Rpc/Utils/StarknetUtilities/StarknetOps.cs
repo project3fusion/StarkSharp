@@ -1,15 +1,14 @@
-﻿using StarkSharp.Library.Nethereum.SHA3Keccak;
-using System;
+﻿using System;
 using System.Linq;
 using System.Numerics;
+using StarkSharp.Library.Nethereum.SHA3Keccak;
+
 
 namespace StarkSharp.Rpc.Utils
 {
     public static class StarknetOps
     {
-
         // Compute the Starknet Keccak hash for a string
-
         private static readonly BigInteger MASK_250 = BigInteger.Pow(2, 250);
 
         public static BigInteger ComputeStarknetKeccak(string value)
@@ -31,8 +30,6 @@ namespace StarkSharp.Rpc.Utils
                 throw new InvalidOperationException("Failed to compute Starknet Keccak hash.", ex);
             }
         }
-
-
         // Remove '0x' prefix from a string
         public static string RemoveHexPrefix(string hexValue)
         {
@@ -49,7 +46,6 @@ namespace StarkSharp.Rpc.Utils
         {
             return "0x" + RemoveHexPrefix(hex);
         }
-
         private static string ConvertToHexString(string number) => BigInteger.Parse(number).ToString("x");
 
         // Hash a BigInteger with Keccak
@@ -77,24 +73,19 @@ namespace StarkSharp.Rpc.Utils
                 throw new InvalidOperationException("Failed to hash string with Keccak.", ex);
             }
         }
-
         private static byte[] ConvertToUTF8Bytes(string value)
         {
             return System.Text.Encoding.UTF8.GetBytes(value);
         }
-
         private static byte[] ComputeKeccakHash(byte[] inputBytes)
         {
             Sha3Keccack sha3 = new Sha3Keccack();
             return sha3.CalculateHash(inputBytes);
         }
-
         private static string AddHexPrefix(string hex)
         {
             return hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase) ? hex : "0x" + hex;
         }
-       
-
         private static string ProcessHexValue(string value)
         {
             string strippedValue = RemoveHexPrefix(HashStringWithKeccak(value));
@@ -146,7 +137,6 @@ namespace StarkSharp.Rpc.Utils
                     return CalculateFunctionSelector(input);
             }
         }
-
     }
 }
 

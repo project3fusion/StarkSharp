@@ -1,19 +1,16 @@
 using System;
 using System.IO;
-using System.Numerics;
 using System.Globalization;
-using System.Diagnostics;
 using Newtonsoft.Json;
 using StarkSharp.StarkCurve.Extensions;
 using StarkSharp.StarkCurve.Utils;
-using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Math;
 using BouncyBigInt = Org.BouncyCastle.Math.BigInteger;
 using BigInt = System.Numerics.BigInteger;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace StarkSharp.StarkCurve.Signature
 {
@@ -41,11 +38,8 @@ namespace StarkSharp.StarkCurve.Signature
 
     public static class ECDSA
     {
-        private const string PedersenHashPointFilename = "StarkSharp.Signer/StarkCurveSigner/pedersen_params.json";
-
-        // Load the parameters from pedersen_params.json
-        private static readonly StarkCurveParameters PedersenParams = JsonConvert.DeserializeObject<StarkCurveParameters>(
-            File.ReadAllText(PedersenHashPointFilename));
+        private const string PedersenHashPointFilename = "StarkSharp\\StarkSharp.Signer\\StarkCurveSigner\\pedersen_params.json"; // Hey, Adjust according to your File Directory
+        private static readonly StarkCurveParameters PedersenParams = JsonConvert.DeserializeObject<StarkCurveParameters>(File.ReadAllText(PedersenHashPointFilename));
 
         // Field parameters.
         public static readonly BigInt FieldPrime = PedersenParams.FieldPrime;
@@ -79,6 +73,7 @@ namespace StarkSharp.StarkCurve.Signature
         {
             // Calculate the number of bits in FIELD_PRIME.
             int nElementBitsEcdsa = (int)Math.Floor(BigInt.Log(FieldPrime, 2));
+
             Debug.Assert(nElementBitsEcdsa == 251, "nElementBitsEcdsa must be 251 bits.");
 
             // Calculate the bit length of FIELD_PRIME for hash operations.
@@ -239,79 +234,102 @@ namespace StarkSharp.StarkCurve.Signature
         // (ref: https://github.com/starkware-libs/cairo-lang/blob/master/src/starkware/crypto/signature/signature.py#L137)
         public static ECSignature Sign(BigInt msgHash, BigInt privKey, BigInt? seed = null)
         {
-            /**
-                msg_hash must be smaller than 2**N_ELEMENT_BITS_ECDSA.
-                Message whose hash is >= 2**N_ELEMENT_BITS_ECDSA cannot be signed.
-                This happens with a very small probability.
-            **/
-            if (msgHash < 0 || msgHash >= BigInt.Pow(2, NElementBitsEcdsa))
-                throw new ArgumentException("Message not signable.");
+            EnsureMessageIsSignable(msgHash);
 
-            /**
-                Choose a valid k. In our version of ECDSA not every k value is valid,
-                and there is a negligible probability a drawn k cannot be used for signing.
-                This is why we have this loop.
-            **/
             while (true)
             {
                 var k = GenerateKRFC6979(msgHash, privKey, seed);
                 seed = seed.HasValue ? seed + 1 : new BigInt(1); // Update seed for next iteration in case the value of k is bad.
 
-                var x = (MathUtils.ECMult(k, EcGen, Alpha, FieldPrime)).X;
+                BigInt r = CalculateR(k);
+                if (IsInvalidValue(r)) continue;
 
-                var r = new BigInt(x.ToByteArray());
+                BigInt temp = CalculateTemp(msgHash, r, privKey);
+                if (temp == 0) continue; // Bad value. This fails with negligible probability.
 
-                if (r <= 0 || r >= BigInt.Pow(2, NElementBitsEcdsa))
-                    // Bad value. This fails with negligible probability.
-                    continue;
-
-                var temp = (msgHash + r * privKey) % EcOrder;
-
-                if (temp == 0)
-                    // Bad value. This fails with negligible probability.
-                    continue;
-
-                var w = MathUtils.DivMod(k, temp, EcOrder);
-
-                if (w <= 0 || w >= BigInt.Pow(2, NElementBitsEcdsa))
-                    // Bad value. This fails with negligible probability.
-                    continue;
-
-                var s = InvModCurveSize(w);
+                BigInt s = CalculateS(k, temp);
+                if (IsInvalidValue(s)) continue;
 
                 return new ECSignature(r, s);
             }
         }
 
+        private static void EnsureMessageIsSignable(BigInt msgHash)
+        {
+            if (msgHash < 0 || msgHash >= BigInt.Pow(2, NElementBitsEcdsa))
+                throw new ArgumentException("Message not signable.");
+        }
+
+        private static BigInt CalculateR(BigInt k)
+        {
+            return new BigInt((MathUtils.ECMult(k, EcGen, Alpha, FieldPrime)).X.ToByteArray());
+        }
+
+        private static BigInt CalculateTemp(BigInt msgHash, BigInt r, BigInt privKey)
+        {
+            return (msgHash + r * privKey) % EcOrder;
+        }
+
+        private static BigInt CalculateS(BigInt k, BigInt temp)
+        {
+            var w = MathUtils.DivMod(k, temp, EcOrder);
+            return InvModCurveSize(w);
+        }
+
+        private static bool IsInvalidValue(BigInt value)
+        {
+            return value <= 0 || value >= BigInt.Pow(2, NElementBitsEcdsa);
+        }
+
         public static MathUtils.ECPoint MimicEcMultAir(BigInt m, MathUtils.ECPoint point, MathUtils.ECPoint shiftPoint)
         {
-            if (m <= 0 || m >= BigInt.Pow(2, NElementBitsEcdsa))
-                throw new ArgumentException("Invalid 'm' value");
+            EnsureValidScalar(m);
 
-            MathUtils.ECPoint partialSum = shiftPoint;
+            MathUtils.ECPoint result = shiftPoint;
             for (int i = 0; i < NElementBitsEcdsa; i++)
             {
-                if (partialSum.X == point.X)
-                    throw new InvalidOperationException("Invalid operation");
+                PreventInvalidOperation(result, point);  
 
-                if ((m & 1) == 1)
-                    partialSum = MathUtils.ECAdd(partialSum, point, FieldPrime);
+                if (IsBitSet(m, 0))
+                    result = MathUtils.ECAdd(result, point, FieldPrime);
 
                 point = MathUtils.ECDouble(point, Alpha, FieldPrime);
                 m >>= 1;
             }
 
+            EnsureAllBitsProcessed(m);
+
+            return result;
+        }
+
+        private static void EnsureValidScalar(BigInt m)
+        {
+            if (m <= 0 || m >= BigInt.Pow(2, NElementBitsEcdsa))
+                throw new ArgumentException("Invalid 'm' value");
+        }
+
+        private static void PreventInvalidOperation(MathUtils.ECPoint partialSum, MathUtils.ECPoint point)
+        {
+            if (partialSum.X == point.X)
+                throw new InvalidOperationException("Invalid operation");
+        }
+
+        private static bool IsBitSet(BigInt value, int position)
+        {
+            return (value & (1 << position)) != 0;
+        }
+
+        private static void EnsureAllBitsProcessed(BigInt m)
+        {
             if (m != 0)
                 throw new InvalidOperationException("Invalid operation");
-
-            return partialSum;
         }
+
 
         public static bool IsPointOnCurve(BigInt x, BigInt y)
         {
             BigInt leftSide = BigInt.ModPow(y, 2, FieldPrime);
             BigInt rightSide = (BigInt.ModPow(x, 3, FieldPrime) + Alpha * x + Beta) % FieldPrime;
-
             return leftSide == rightSide;
         }
 
@@ -325,60 +343,40 @@ namespace StarkSharp.StarkCurve.Signature
             try
             {
                 GetYCoordinate(starkKey);
+                return true;
             }
             catch (InvalidOperationException)
             {
                 return false;
             }
-            return true;
         }
 
-        // (ref: https://github.com/starkware-libs/cairo-lang/blob/master/src/starkware/crypto/signature/signature.py#L217)
-        public static bool Verify(BigInt msgHash, BigInt r, BigInt s, object publicKey) // publicKey can be int or ECPoint
+        public static bool Verify(BigInt msgHash, BigInt r, BigInt s, object publicKey)
         {
-            // Check the bounds for 's'
-            if (s <= 1 || s >= EcOrder)
-                throw new ArgumentException($"Invalid 's' value: {s}");
+            if (!(publicKey is BigInt) && !(publicKey is MathUtils.ECPoint))
+                throw new ArgumentException("Invalid public key type");
 
-            BigInt w = InvModCurveSize(s);
-
-            // Perform preassumptions checks
-            if (r <= 1 || r >= BigInt.Pow(2, NElementBitsEcdsa))
-                throw new ArgumentException($"Invalid 'r' value: {r}");
-
-            if (w <= 1 || w >= BigInt.Pow(2, NElementBitsEcdsa))
-                throw new ArgumentException($"Invalid 'w' value: {w}");
-
-            if (msgHash < 0 || msgHash >= BigInt.Pow(2, NElementBitsEcdsa))
-                throw new ArgumentException($"Invalid 'msg_hash' value: {msgHash}");
-
-            MathUtils.ECPoint publicKeyPoint;
             if (publicKey is BigInt publicKeyInt)
             {
-                // Only the x coordinate of the point is given, check the two possibilities for the y coordinate.
                 try
                 {
                     BigInt y = GetYCoordinate(publicKeyInt);
-                    publicKeyPoint = new MathUtils.ECPoint(publicKeyInt, y);
+                    return VerifyWithPoint(msgHash, r, s, new MathUtils.ECPoint(publicKeyInt, y)) ||
+                           VerifyWithPoint(msgHash, r, s, new MathUtils.ECPoint(publicKeyInt, (-y) % FieldPrime));
                 }
-                catch (Exception) // Catch the specific exception that GetYCoordinate throws for an invalid key
+                catch
                 {
                     return false;
                 }
-
-                // Attempt verification with both possible y coordinates
-                return Verify(msgHash, r, s, publicKeyPoint) ||
-                       Verify(msgHash, r, s, new MathUtils.ECPoint(publicKeyPoint.X, (-publicKeyPoint.Y) % (FieldPrime)));
-            }
-            else if (publicKey is MathUtils.ECPoint point)
-            {
-                publicKeyPoint = point;
             }
             else
             {
-                throw new ArgumentException("Invalid public key type");
+                return VerifyWithPoint(msgHash, r, s, (MathUtils.ECPoint)publicKey);
             }
+        }
 
+        private static bool VerifyWithPoint(BigInt msgHash, BigInt r, BigInt s, MathUtils.ECPoint publicKeyPoint)
+        {
             // Ensure the public key point is on the curve
             if (!IsPointOnCurve(publicKeyPoint.X, publicKeyPoint.Y))
                 throw new ArgumentException("Public key is not on the curve");
@@ -388,7 +386,7 @@ namespace StarkSharp.StarkCurve.Signature
             {
                 MathUtils.ECPoint zG = MimicEcMultAir(msgHash, EcGen, MinusShiftPoint);
                 MathUtils.ECPoint rQ = MimicEcMultAir(r, publicKeyPoint, ShiftPoint);
-                MathUtils.ECPoint wB = MimicEcMultAir(w, MathUtils.ECAdd(zG, rQ, FieldPrime), ShiftPoint);
+                MathUtils.ECPoint wB = MimicEcMultAir(s, MathUtils.ECAdd(zG, rQ, FieldPrime), ShiftPoint);
                 BigInt x = MathUtils.ECAdd(wB, MinusShiftPoint, FieldPrime).X;
 
                 // Comparison without mod n, differing from classic ECDSA
@@ -431,8 +429,6 @@ namespace StarkSharp.StarkCurve.Signature
                     {
                         point = MathUtils.ECAdd(point, ecPt, FieldPrime);
                     }
-
-
                     x >>= 1;
                 }
 
@@ -460,6 +456,6 @@ namespace StarkSharp.StarkCurve.Signature
 
             return point.X;
         }
+
     }
 }
-
