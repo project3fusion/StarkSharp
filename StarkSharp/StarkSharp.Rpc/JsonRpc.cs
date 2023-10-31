@@ -13,10 +13,10 @@ namespace StarkSharp.Rpc
         public string jsonrpc { get; } = "2.0";
         public string method { get; set; }
         public object[] @params { get; set; }
-       
+
     }
     public class TransactionRpc : JsonRpc
-    {}
+    { }
     public class JsonRpcResponse
     {
         public string jsonrpc { get; set; }
@@ -32,36 +32,15 @@ namespace StarkSharp.Rpc
     }
     public class JsonRpcHandler
     {
-        public static JsonRpc GenerateRequestData(string method, object data)
+        public static JsonRpc GenerateRequestData(string method, object[] data)
         {
             try
             {
-                object[] refinedData;
-                if (data.GetType().IsArray)
-                {
-                    refinedData = new object[((object[])data).Length];
-                    for (int i = 0; i < ((object[])data).Length; i++)
-                    {
-                        if (((object[])data)[i].GetType() == typeof(string))
-                        {
-                            refinedData[i] = ((string)((object[])data)[i]).Trim();
-                        }
-                        else
-                        {
-                            refinedData[i] = ((object[])data)[i];
-                        }
-                    }
-                }
-                else
-                {
-                    refinedData = new object[] { data };
-                }
-
                 var requestData = new JsonRpc
                 {
                     id = 1,
                     method = method,
-                    @params = refinedData
+                    @params = data
                 };
 
                 return requestData;

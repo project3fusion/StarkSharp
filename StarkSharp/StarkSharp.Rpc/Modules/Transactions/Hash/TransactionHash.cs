@@ -21,16 +21,37 @@ namespace StarkSharp.Rpc.Modules.Transactions.Hash
         {
             public static string[] FormatCalldataOther(Call[] callArray)
             {
-                return callArray.SelectMany(call => new[] { call.To, call.Selector }.Concat(call.Data)).ToArray();
+                return new[] { "0x" + new BigInteger(callArray.Length).ToString("x") }.Concat(callArray.SelectMany(call => new[] { call.To, call.Selector, "0x" + new BigInteger(call.Data.Length).ToString("x") }.Concat(call.Data))).ToArray();
             }
+
             public static string[] FormatCalldataCairo0(Call[] callArray)
             {
-                return new[] { new BigInteger(callArray.Length).ToString("x") }
-                    .Concat(callArray.SelectMany(call =>
-                        new[] { call.To, call.Selector, new BigInteger(call.Data.Length).ToString("x") }
-                        .Concat(call.Data)))
-                    .ToArray();
+                List<string> calldata = new List<string>();
+                List<string> calls = new List<string>();
+
+                calldata.Add("0x" + new BigInteger(callArray.Length).ToString("x"));
+
+                int offset = 0;
+                foreach (Call call in callArray)
+                {
+                    calldata.Add(call.To);
+                    calldata.Add(call.Selector);
+                    calldata.Add("0x" + offset.ToString("x")); // data offset
+                    calldata.Add("0x" + new BigInteger(call.Data.Length).ToString("x")); // data length
+
+                    offset += call.Data.Length;
+
+                    foreach (string data in call.Data)
+                    {
+                        calls.Add(data);
+                    }
+                }
+                calldata.Add("0x" + offset.ToString("x")); // calldata length
+                calldata.AddRange(calls);
+
+                return calldata.ToArray();
             }
+
             public static string[] FormatCalldata(Call[] callArray, int cairoVersion)
             {
                 return cairoVersion == 0 ? FormatCalldataCairo0(callArray) : FormatCalldataOther(callArray);
@@ -41,44 +62,12 @@ namespace StarkSharp.Rpc.Modules.Transactions.Hash
             }
             public static string ComputeCalldataHashOther(Call[] callArray)
             {
-                List<BigInteger> calldataHashes = new List<BigInteger>();
-                foreach (Call call in callArray)
-                {
-                    BigInteger callHash = ComputeHashOnElements(call.Data);
-                    BigInteger calldataHash = ECDSA.PedersenArrayHash(
-                        HexToBigInteger(call.To),
-                        HexToBigInteger(call.Selector),
-                        callHash
-                    );
-                    calldataHashes.Add(calldataHash);
-                }
-                BigInteger finalCalldataHash = ECDSA.PedersenArrayHash(calldataHashes.ToArray());
-                return finalCalldataHash.ToString("x");
+                return ECDSA.PedersenArrayHash(FormatCalldataOther(callArray).Select(HexToBigInteger).ToArray()).ToString("x");
             }
 
             public static string ComputeCalldataHashCairo0(Call[] callArray)
             {
-                List<BigInteger> calldata = new List<BigInteger>();
-                BigInteger callArrayLength = new(callArray.Length);
-                calldata.Add(callArrayLength);
-                int offset = 0;
-                foreach (Call call in callArray)
-                {
-                    calldata.Add(HexToBigInteger(call.To));
-                    calldata.Add(HexToBigInteger(call.Selector));
-
-                    calldata.Add(new BigInteger(offset));  // data offset
-                    calldata.Add(new BigInteger(call.Data.Length));  // data length
-
-                    foreach (string data in call.Data)
-                    {
-                        calldata.Add(HexToBigInteger(data));
-                    }
-
-                    offset += call.Data.Length;
-                }
-                BigInteger calldataHash = ECDSA.PedersenArrayHash(calldata.ToArray());
-                return calldataHash.ToString("x");
+                return ECDSA.PedersenArrayHash(FormatCalldataCairo0(callArray).Select(HexToBigInteger).ToArray()).ToString("x");
             }
 
             public static ECDSA.ECSignature SignInvokeTransaction(string version, string senderAddress, string calldataHash, string maxFee, string chainId, string nonce, BigInteger privateKey)
