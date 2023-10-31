@@ -1,3 +1,4 @@
+using StarkSharp.Connectors.Components;
 using StarkSharp.Fusion.Sharpion.Manager.IonPlatforms;
 using StarkSharp.Fusion.Sharpion.Manager.IonPlatforms.Dotnet;
 using StarkSharp.Fusion.Sharpion.Manager.IonPlatforms.Unity;
@@ -31,7 +32,7 @@ namespace StarkSharp.Fusion.Sharpion.Manager
         public virtual void ConnectWallet() { IonPlatform.ConnectWallet(); }
         public virtual void DisconnectWallet() { IonPlatform.DisconnectWallet(); }
         public virtual void BalanceOf(string walletadress) { IonPlatform.BalanceOf(walletadress); }
-        public virtual void SendTransaction(string Receivingaddress, BigInteger amount) { IonPlatform.SendTransaction(Receivingaddress,amount); }
+        public virtual void SendTransaction(TransactionInteraction transactionInteraction) { IonPlatform.SendTransaction(transactionInteraction); }
 
     }
 }

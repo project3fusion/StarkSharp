@@ -1,9 +1,9 @@
 using System;
-
+using Newtonsoft.Json;
 using StarkSharp.Accounts;
 using StarkSharp.Connectors.Components;
 using StarkSharp.Platforms;
-
+using StarkSharp.Rpc;
 using static StarkSharp.Platforms.Platform;
 
 namespace StarkSharp.Connectors
@@ -31,48 +31,34 @@ namespace StarkSharp.Connectors
             ConnectorWaitUntil(id, successCallback, failCallback, ConnectorEventPredicate(id));
         }
 
-        public virtual void SendTransaction(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> failCallback)
-        {
-            int id = ConnectorTask.CreateNewTask();
+        public virtual void ConnectorConnectWallet(string walletType, int id) => platform.ConnectWallet(walletType, id);
 
-            ConnectorSendTransaction(id, contractInteraction.ContractAdress, contractInteraction.EntryPoint, contractInteraction.CallData);
+        public virtual void SendTransaction(TransactionInteraction transactionInteraction, Action<JsonRpcResponse> successCallback, Action<JsonRpcResponse> failCallback) => ConnectorSendTransaction(transactionInteraction, successCallback, failCallback);
 
-            ConnectorWaitUntil(id, successCallback, failCallback, ConnectorEventPredicate(id));
-        }
-
-        public virtual void CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> failCallback)
-        {
-            int id = ConnectorTask.CreateNewTask();
-
-            ConnectorCallContract(id, contractInteraction, successCallback, failCallback);
-
-            ConnectorWaitUntil(id, successCallback, failCallback, ConnectorEventPredicate(id));
-        }
+        public virtual void CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> failCallback) => ConnectorCallContract(contractInteraction, successCallback, failCallback);
 
         public virtual void ConnectorWaitUntil(int id, Action<string> successCallback, Action<string> failCallback, Func<bool> predicate) => platform.WaitUntil(id, successCallback, failCallback, predicate, ConnectorEventTrigger);
 
-        public virtual Func<bool> ConnectorEventPredicate(int id) => () => ConnectorCheckWalletConnectionStatus() && ConnectorTask.GetStatus(id) != 0;
+        public virtual Func<bool> ConnectorEventPredicate(int id) => () => ConnectorCheckWalletConnectionStatus();
 
-        public virtual Func<bool> ConnectorConnectEventPredicate(int id) => () => ConnectorCheckWalletConnectionStatus() || ConnectorTask.GetStatus(id) != 0;
-
-        public virtual void ConnectorConnectWallet(string walletType, int id) => platform.ConnectWallet(walletType, id);
-
-        public virtual void ConnectorSendTransaction(int id, string contractAddress, string entryPoint, string callData) => platform.SendTransaction(walletType.ToString(), id, contractAddress, entryPoint, callData);
-
-        public virtual void ConnectorCallContract(int id, ContractInteraction contractInteraction, Action<string> successCallback, Action<string> failCallback)
+        public virtual Func<bool> ConnectorConnectEventPredicate(int id) => () => ConnectorCheckWalletConnectionStatus();
+        public virtual void ConnectorSendTransaction(TransactionInteraction transactionInteraction, Action<JsonRpcResponse> successCallback, Action<JsonRpcResponse> failCallback)
         {
-            platform.CallContract(contractInteraction,
-                                  message => ConnectorOnCallContractSucceeded(successCallback, message),
-                                  message => ConnectorOnCallContractFailed(failCallback, message));
+            platform.SendTransaction(
+                platform,
+                 transactionInteraction,
+                 successCallback,
+                 failCallback
+             );
+        }
+
+        public virtual void ConnectorCallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> failCallback)
+        {
+            platform.CallContract(contractInteraction, message => ConnectorOnCallContractSucceeded(successCallback, message), message => ConnectorOnCallContractFailed(failCallback, message));
         }
 
         public virtual bool ConnectorCheckWalletConnectionStatus() => platform.CheckWalletConnection();
-
-        public virtual void ConnectorEventTrigger(int id, Action<string> successCallback, Action<string> failCallback)
-        {
-            if (ConnectorCheckWalletConnectionStatus() && ConnectorTask.GetStatus(id, isRemove: true) == 1) ConnectorOnWalletConnectionSucceeded(successCallback, ConnectorTask.GetMessage(id));
-            else ConnectorOnWalletConnectionFailed(failCallback, ConnectorTask.GetMessage(id));
-        }
+        public virtual void ConnectorEventTrigger(int id, Action<string> successCallback, Action<string> failCallback) { }
 
         public virtual void ConnectorOnWalletConnectionSucceeded(Action<string> callback, string message)
         {
@@ -82,9 +68,17 @@ namespace StarkSharp.Connectors
             callback(message);
         }
 
-        public virtual void ConnectorOnWalletConnectionFailed(Action<string> callback, string message) => callback(message);
+        public virtual void ConnectorOnSendTransactionFailed(Action<JsonRpcResponse> errorResponse, string message)
+        {
+            JsonRpcResponse jsonResponse = JsonConvert.DeserializeObject<JsonRpcResponse>(message);
+            errorResponse?.Invoke(jsonResponse);
+        }
 
-        public virtual void ConnectorOnSendTransactionSucceeded(Action<string> callback, string message) => callback(message);
+        public virtual void ConnectorOnSendTransactionSucceeded(Action<JsonRpcResponse> successResponse, string message)
+        {
+            JsonRpcResponse jsonResponse = JsonConvert.DeserializeObject<JsonRpcResponse>(message);
+            successResponse?.Invoke(jsonResponse);
+        }
 
         public virtual void ConnectorOnSendTransactionFailed(Action<string> callback, string message) => callback(message);
 

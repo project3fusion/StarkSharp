@@ -1,8 +1,10 @@
 ﻿namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
+
 {
     public class Enum
     {
-        public enum ClientEnum // Enum listing possible client actions or commands.
+        // Enum listing possible client actions or commands.
+        public enum ClientEnum
         {
             Register = 1,    // Represents client's intent to register.
             Login = 2,    // Represents client's intent to log in.

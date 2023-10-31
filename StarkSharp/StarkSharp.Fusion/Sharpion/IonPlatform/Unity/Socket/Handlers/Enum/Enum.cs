@@ -1,4 +1,5 @@
 ﻿namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
+
 {
     public class Enum
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarkSharp.Connectors.Components;
+using System;
 using System.Numerics;
 using static StarkSharp.Fusion.Sharpion.Unity.Handlers.Enum;
 
@@ -7,6 +8,7 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
     public class Packs
     {
         private static System.Random random = new System.Random();
+
         // Creates and returns a LoginPacket with provided information.
         public static LoginPacket CreateLoginPack(bool durum, bool auth)
         {
@@ -18,6 +20,7 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
             packetlogin.wo = null; // Work order indicates the source or usage purpose.
             return packetlogin; // Return the fully formed login packet.
         }
+
         // Creates and returns a DisconnectPacket with provided information.
         public static DisconnectPacket CreateDisconnectPack(int socketid, bool durum, bool auth)
         {
@@ -29,6 +32,7 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
             packetdisconnect.disconnect = durum;
             return packetdisconnect; // Return the fully formed login packet.
         }
+
         // Creates and returns a BalancePacket packet with provided information.
         public static BalancePacket CreateBalanceOfPack(int socketid, string walletad)
         {
@@ -42,12 +46,12 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
             return packetbalance; // Return the fully formed packet.
         }
         // Creates and returns a basic TransactionPacket.
-        public static TransactionPacket CreateTransactionPack(int socketid, string walletadress, BigInteger amount)
+        public static TransactionPacket CreateTransactionPack(int socketid, TransactionInteraction interaction)
         {
             TransactionPacket packettransaction = new TransactionPacket(); // Initialize a new instance of TransactionPacket.
             // Generate a random packet ID between 0 and 99999999.
             packettransaction.packetid = random.Next(0, 99999999).ToString();
-            packettransaction.RecipientAddress = walletadress;
+            packettransaction.ContractPack = interaction;
 
             // Set the type of the packet using the ClientEnum.
             packettransaction.type = (int)ClientEnum.Transaction;
@@ -63,28 +67,33 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
             public string message;      // General Message or Data from server or client.
             public string wo;           // Work order or specific instruction related to the packet.
         }
+
         // Packet specifically for exchanging web related information.
         public class ConnectionWalletPack : Packet
         {
             public string PublicWallet;  // Public wallet address
             public string WalletBalance;  // Public wallet balance
         }
+
         // Packet specifically for balance related information.
         public class BalancePacket : Packet
         {
             public string WalletAdress; // Public wallet address of the client.
             public string BalanceOfEth;       // Balance of Ethereum in the client's wallet.
         }
+
         // Packet used for login actions.
         public class LoginPacket : Packet
         {
             public bool islog;       // Indicates if the client is currently logged in.
             public bool auth;        // Indicates if the client has authenticated successfully.
         }
+
         public class DisconnectPacket : Packet
         {
             public bool disconnect;  // client has disconnect
         }
+
         // Packet used for registration actions.
         public class Register : Packet
         {
@@ -94,9 +103,7 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
         public class TransactionPacket : Packet
         {
             public string TransactionStatusMessage;  // Message or status about a specific transaction.
-            public string SenderAddress;  // Message or status about a specific transaction.
-            public string RecipientAddress;
-            public BigInteger amount;
+            public object ContractPack;
         }
     }
 }

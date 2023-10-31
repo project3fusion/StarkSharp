@@ -9,7 +9,8 @@ namespace StarkSharp.Tools.Notification
     {
         Info,
         Warning,
-        Error
+        Error,
+        Success
     }
     public enum NotificationPlatform
     {
@@ -33,6 +34,9 @@ namespace StarkSharp.Tools.Notification
             {
                 case NotificationPlatform.DotNet:
                     DotnetNotify.HandleDotNetNotification(message, type);
+                    break;
+                case NotificationPlatform.Unity:
+                    UnityNotify.HandleUnityNotification(message, type);
                     break;
                 default:
                     throw new ArgumentException("Undefine platform");

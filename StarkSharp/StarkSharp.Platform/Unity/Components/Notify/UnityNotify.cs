@@ -20,7 +20,7 @@ namespace StarkSharp.Tools.Notification.NotifyPlatform
                     UnityEngine.Debug.LogError($"[ERROR] {message}");
                     break;
                 default:
-                    throw new ArgumentException("Geçersiz bildiri tipi");
+                    throw new ArgumentException("Invalid declaration type");
             }
         }
     }

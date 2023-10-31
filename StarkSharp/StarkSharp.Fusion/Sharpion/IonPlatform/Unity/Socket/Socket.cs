@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using System.Diagnostics;
 using System;
+using StarkSharp.Connectors.Components;
 
 namespace StarkSharp.Fusion.Sharpion.Unity
 {
@@ -17,6 +18,7 @@ namespace StarkSharp.Fusion.Sharpion.Unity
     {
         public static Socket instance;
         public static WebSocket ws;
+
         public static int SocketClientID;
         public static string SocketSessionToken;
         public string UserWalletAddress;
@@ -53,7 +55,7 @@ namespace StarkSharp.Fusion.Sharpion.Unity
         }
         public void DisconnectWallet() => instance.SendDataFromJson(JsonUtility.ToJson(Packs.CreateDisconnectPack(SocketClientID, false, false)));
         public void BalanceOfWallet(string WalletAdress) => instance.SendDataFromJson(JsonUtility.ToJson(Packs.CreateBalanceOfPack(SocketClientID, WalletAdress)));
-        public void SendTransaction(string Receivingaddress, BigInteger amount) => instance.SendDataFromJson(JsonUtility.ToJson(Packs.CreateTransactionPack(SocketClientID, Receivingaddress, amount)));
+        public void SendTransaction(TransactionInteraction transactionInteraction) => instance.SendDataFromJson(JsonUtility.ToJson(Packs.CreateTransactionPack(SocketClientID, transactionInteraction)));
 
         public void DisconnectFromServer()
         {
@@ -65,7 +67,7 @@ namespace StarkSharp.Fusion.Sharpion.Unity
         }
 
         public bool IsSocketAlive() => ws?.IsAlive ?? false;
-		
+
         public void SendDataFromJson(string sendjson)
         {
             try

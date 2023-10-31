@@ -19,6 +19,9 @@ namespace StarkSharp.Tools.Notification.NotifyPlatform
                 case NotificationType.Error:
                     Console.WriteLine($"[ERROR] {message}");
                     break;
+                case NotificationType.Success:
+                    Console.WriteLine($"[Succes] {message}");
+                    break;
                 default:
                     throw new ArgumentException("Invalid declaration type");
             }

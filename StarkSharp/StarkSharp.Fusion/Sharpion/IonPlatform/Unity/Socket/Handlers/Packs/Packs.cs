@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using StarkSharp.Connectors.Components;
+using System.Numerics;
 using static StarkSharp.Fusion.Sharpion.Unity.Handlers.Enum;
 
 namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
@@ -6,6 +7,7 @@ namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
     public class Packs
     {
         private static System.Random random = new System.Random();
+
         // Creates and returns a LoginPacket with provided information.
         public static LoginPacket CreateLoginPack(string SessionToken, bool durum, bool auth)
         {
@@ -44,12 +46,12 @@ namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
             return packetbalance; // Return the fully formed packet.
         }
         // Creates and returns a basic TransactionPacket.
-        public static TransactionPacket CreateTransactionPack(int socketid, string walletadress, BigInteger amount)
+        public static TransactionPacket CreateTransactionPack(int socketid, TransactionInteraction interaction)
         {
             TransactionPacket packettransaction = new TransactionPacket(); // Initialize a new instance of TransactionPacket.
             // Generate a random packet ID between 0 and 99999999.
             packettransaction.packetid = random.Next(0, 99999999).ToString();
-            packettransaction.RecipientAddress = walletadress;
+            packettransaction.ContractPack = interaction;
 
             // Set the type of the packet using the ClientEnum.
             packettransaction.type = (int)ClientEnum.Transaction;
@@ -87,11 +89,12 @@ namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
             public bool islog;       // Indicates if the client is currently logged in.
             public bool auth;        // Indicates if the client has authenticated successfully.
         }
-		
+
         public class DisconnectPacket : Packet
         {
             public bool disconnect;  // client has disconnect
         }
+
         // Packet used for registration actions.
         public class Register : Packet
         {
@@ -101,9 +104,7 @@ namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
         public class TransactionPacket : Packet
         {
             public string TransactionStatusMessage;  // Message or status about a specific transaction.
-            public string SenderAddress;  // Message or status about a specific transaction.
-            public string RecipientAddress;
-            public BigInteger amount;
+            public object ContractPack; 
         }
     }
 }

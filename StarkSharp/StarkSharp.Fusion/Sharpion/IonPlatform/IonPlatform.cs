@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+﻿
+using StarkSharp.Connectors.Components;
+using System.Numerics;
 
 namespace StarkSharp.Fusion.Sharpion.Manager.IonPlatforms
 {
@@ -10,6 +12,7 @@ namespace StarkSharp.Fusion.Sharpion.Manager.IonPlatforms
         public virtual void ConnectWallet() { }
         public virtual void DisconnectWallet() { }
         public virtual void BalanceOf(string walletadress) { }
-        public virtual void SendTransaction(string Receivingaddress, BigInteger amount) { }
+        public virtual void SendTransaction(TransactionInteraction transactionInteraction) { }
+
     }
 }

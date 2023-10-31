@@ -1,4 +1,8 @@
-﻿using StarkSharp.Fusion.Sharpion;
+﻿using StarkSharp.Connectors.Components;
+using StarkSharp.Fusion.Sharpion;
+using StarkSharp.Fusion.Sharpion.Manager;
+using StarkSharp.Rpc;
+using System;
 
 namespace StarkSharp.Platforms.Unity.Sharpion
 {
@@ -16,9 +20,9 @@ namespace StarkSharp.Platforms.Unity.Sharpion
             manager.ConnectWallet();
         }
 
-        public override void SendTransaction(string walletType, int id, string contractAddress, string entryPoint, string callData)
+        public override void SendTransaction(Platform platform, TransactionInteraction transactionInteraction, Action<JsonRpcResponse> successCallback, Action<JsonRpcResponse> errorCallback)
         {
-            manager.SendTransaction();
+            manager.SendTransaction(transactionInteraction);
         }
     }
 }

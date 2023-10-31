@@ -80,6 +80,7 @@ namespace StarkSharp.Fusion.Sharpion.Unity.Handlers
                 if (!string.IsNullOrEmpty(connectionPacket.PublicWallet))
                 {
                     Debug.Log($"Player Wallet Address: {connectionPacket.PublicWallet}");
+
                     // Update the user's wallet address in the Socket instance.
                     Socket.instance.UserWalletAddress = connectionPacket.PublicWallet;
                 }

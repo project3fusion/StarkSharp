@@ -5,6 +5,7 @@ using StarkSharp.Platforms;
 using StarkSharp.Rpc.Modules.Transactions.Hash;
 using StarkSharp.StarkCurve.Signature;
 using StarkSharp.Tools.Notification;
+using System;
 using System.Numerics;
 
 
@@ -89,8 +90,9 @@ namespace StarkSharp.Rpc.Modules.Transactions
                     {
                         id = 1,
                         method = "starknet_estimateFee",
-                        @params = [transactionRequest, "latest"]
+                        @params = new object[] { transactionRequest, "latest" }
                     };
+
 
                     _platform.PlatformRequest(requestData, response =>
                         OnEstimateFeeComplete(platform, response)

@@ -8,6 +8,7 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
 {
     public class Handler
     {
+
         public static async Task HandShake(string datahandjson)
         {
             try
@@ -39,6 +40,7 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
                 Console.WriteLine("Error in HandShake: " + ex.Message);
             }
         }
+
         public static async Task HandleLoginPacketAsync(LoginPacket loginPacket)
         {
             // Check for null packets to avoid NullReferenceException.
@@ -145,5 +147,6 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet.Handlers
                 Console.WriteLine($"Error processing the transaction packet in HandleTransactionPacketAsync: {ex.Message}");
             }
         }
+
     }
 }

@@ -7,6 +7,7 @@ using StarkSharp.Fusion.Sharpion.Dotnet.Handlers;
 using System.Numerics;
 using Newtonsoft.Json;
 using System.Text;
+using StarkSharp.Connectors.Components;
 
 namespace StarkSharp.Fusion.Sharpion.Dotnet
 {
@@ -14,16 +15,21 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet
     {
         public static Client instance;
         public static WebSocket ws;
+
         public static int SocketClientID;
         public string UserWalletAddress;
         public string UserBalanceOfEth;
+
         public void ConnectToServer() {
+
             ws = new WebSocket($"ws://{Settings.Settings.webSocketipandport}");
+
             // Event handlers
             ws.OnMessage += async (sender, e) => await Handler.HandShake(e.Data);
             ws.OnOpen += (sender, e) => Console.WriteLine("WebSocket Connection Open.");
             ws.OnClose += (sender, e) => Console.WriteLine("WebSocket Connection Close.");
             ws.OnError += (sender, e) => Console.WriteLine($"WebSocket Connection Error: {e.Message}");
+
             ws.Connect();
         }
         public void DisconnectFromServer()
@@ -35,10 +41,11 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet
             }
         }
         public bool IsSocketAlive() => ws?.IsAlive ?? false;
+
         public void ConnectWallet() => instance.SendDataFromJson(JsonConvert.SerializeObject(Packs.CreateLoginPack(false, false)));
         public void DisconnectWallet() => instance.SendDataFromJson(JsonConvert.SerializeObject(Packs.CreateDisconnectPack(SocketClientID, false, false)));
         public void BalanceOfWallet(string WalletAdress) => instance.SendDataFromJson(JsonConvert.SerializeObject(Packs.CreateBalanceOfPack(SocketClientID, WalletAdress)));
-        public void SendTransaction(string Receivingaddress, BigInteger amount) => instance.SendDataFromJson(JsonConvert.SerializeObject(Packs.CreateTransactionPack(SocketClientID, Receivingaddress, amount)));
+        public void SendTransaction(TransactionInteraction transactionInteraction) => instance.SendDataFromJson(JsonConvert.SerializeObject(Packs.CreateTransactionPack(SocketClientID, transactionInteraction)));
 
         public void SendDataFromJson(string sendjson)
         {
@@ -54,6 +61,7 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet
                 Console.WriteLine(jex.Message); // Prints the specific error message.
                 return; // Exits the method.
             }
+
             try
             {
                 if (ws.ReadyState == WebSocketState.Open)

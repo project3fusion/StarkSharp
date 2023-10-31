@@ -1,4 +1,7 @@
+using StarkSharp.Connectors.Components;
 using StarkSharp.Fusion.Sharpion.Unity;
+using StarkSharp.Platforms;
+using System;
 using System.Numerics;
 
 namespace StarkSharp.Fusion.Sharpion.Manager.IonPlatforms.Unity
@@ -12,6 +15,6 @@ namespace StarkSharp.Fusion.Sharpion.Manager.IonPlatforms.Unity
         public override void DisconnectWallet() => socket.DisconnectWallet(); 
         public override bool ConnectionStatus() =>  socket.IsSocketAlive();
         public override void BalanceOf(string walletadress) => socket.BalanceOfWallet(walletadress);
-        public override void SendTransaction(string Receivingaddress, BigInteger amount) => socket.SendTransaction(Receivingaddress, amount);
+        public override void SendTransaction(TransactionInteraction transactionInteraction) => socket.SendTransaction(transactionInteraction);
     }
 }
