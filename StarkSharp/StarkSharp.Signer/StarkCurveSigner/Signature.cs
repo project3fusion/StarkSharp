@@ -10,7 +10,7 @@ using BouncyBigInt = Org.BouncyCastle.Math.BigInteger;
 using BigInt = System.Numerics.BigInteger;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using System.Diagnostics;
 
 namespace StarkSharp.StarkCurve.Signature
 {
@@ -288,7 +288,7 @@ namespace StarkSharp.StarkCurve.Signature
             MathUtils.ECPoint result = shiftPoint;
             for (int i = 0; i < NElementBitsEcdsa; i++)
             {
-                PreventInvalidOperation(result, point);  
+                PreventInvalidOperation(result, point);
 
                 if (IsBitSet(m, 0))
                     result = MathUtils.ECAdd(result, point, FieldPrime);
@@ -451,7 +451,7 @@ namespace StarkSharp.StarkCurve.Signature
             {
                 point = PedersenHashAsPoint(point.X, elements[i]);
             }
-            BigInt length = new(elements.Length);
+            BigInt length = new BigInt(elements.Length);
             point = PedersenHashAsPoint(point.X, length);
 
             return point.X;

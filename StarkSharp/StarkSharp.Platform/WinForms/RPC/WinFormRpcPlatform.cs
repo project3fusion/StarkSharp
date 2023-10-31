@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace StarkSharp.Platforms.Winforms.RPC
 {
-    public class WinFormRpcPlatform : WinFormsPlatform
+    public class WinFormRpcPlatform : WinFormPlatform
     {
         public override async void CallContract(ContractInteraction contractInteraction, Action<string> successCallback, Action<string> errorCallback)
         {
