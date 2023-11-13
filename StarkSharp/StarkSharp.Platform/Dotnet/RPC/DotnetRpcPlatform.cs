@@ -35,7 +35,7 @@ namespace StarkSharp.Platforms.Dotnet.RPC
             }
         }
 
-        public async Task SendTransaction(Platform platform, TransactionInteraction transactionInteraction, Action<JsonRpcResponse> successCallback, Action<JsonRpcResponse> errorCallback)
+        public override async void SendTransaction(Platform platform, TransactionInteraction transactionInteraction, Action<JsonRpcResponse> successCallback, Action<JsonRpcResponse> errorCallback)
         {
             if (transactionInteraction == null || string.IsNullOrEmpty(transactionInteraction.FunctionName))
             {
@@ -63,7 +63,7 @@ namespace StarkSharp.Platforms.Dotnet.RPC
             }
         }
 
-        public async Task PlatformRequest(JsonRpc requestData, Action<JsonRpcResponse> Callback)
+        public override async void PlatformRequest(JsonRpc requestData, Action<JsonRpcResponse> Callback)
         {
             if (requestData == null)
             {
