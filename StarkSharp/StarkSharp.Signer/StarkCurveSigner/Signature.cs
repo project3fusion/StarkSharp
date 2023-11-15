@@ -216,7 +216,11 @@ namespace StarkSharp.StarkCurve.Signature
 
             // Generate and return the 'k' value
             var nextK = signer.NextK();
-            return new BigInt(nextK.ToByteArrayUnsigned());
+
+            // Convert to a byte array (unsigned)
+            var unsignedBytes = nextK.ToByteArrayUnsigned();
+
+            return BigIntergerExtensions.UnsignedByesToBigInt(unsignedBytes);
         }
 
         private static byte[] PrepareMessageHash(BouncyBigInt msgHash)
@@ -288,7 +292,7 @@ namespace StarkSharp.StarkCurve.Signature
             MathUtils.ECPoint result = shiftPoint;
             for (int i = 0; i < NElementBitsEcdsa; i++)
             {
-                PreventInvalidOperation(result, point);  
+                PreventInvalidOperation(result, point);
 
                 if (IsBitSet(m, 0))
                     result = MathUtils.ECAdd(result, point, FieldPrime);
