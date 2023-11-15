@@ -144,26 +144,17 @@ namespace StarkSharp.StarkCurve.Utils
             return new ECPoint(x, y);
         }
 
-        public static ECPoint ECMult(BigInteger k, ECPoint point, BigInteger alpha, BigInteger p)
+        public static ECPoint ECMult(BigInteger m, ECPoint point, BigInteger alpha, BigInteger p)
         {
-            if (k == 0)
-                return new ECPoint(0, 0);  // Return point at infinity.
+            if (m == 1)
+                return point;
 
-            ECPoint result = new ECPoint(0, 0); // Initialize to point at infinity.
-            ECPoint current = new ECPoint(point.X, point.Y);
-
-            while (k > 0)
+            if (m % 2 == 0)
             {
-                if ((k & 1) == 1)  // If least significant bit is 1, add current point to result.
-                {
-                    result = ECAdd(result, current, p);
-                }
-                current = ECDouble(current, alpha, p);  // Double the current point.
-                k >>= 1;  // Right shift k by 1.
+                return ECMult(m / 2, ECDouble(point, alpha, p), alpha, p);
             }
 
-            return result;
+            return ECAdd(ECMult(m - 1, point, alpha, p), point, p);
         }
-
     }
 }

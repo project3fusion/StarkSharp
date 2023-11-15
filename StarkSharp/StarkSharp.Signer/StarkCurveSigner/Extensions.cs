@@ -12,6 +12,29 @@ namespace StarkSharp.StarkCurve.Extensions
         {
             return (int)Math.Ceiling(BigInteger.Log(integer + 1, 2)); // Plus one handles the case when integer is a power of 2.
         }
+
+        public static BigInteger UnsignedByesToBigInt(byte[] unsignedBytes)
+        {
+            // .NET BigInteger expects a little-endian byte array
+            // Ensure the byte array is in little-endian format
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(unsignedBytes);
+            }
+
+            // Convert to .NET BigInteger
+            var netBigInteger = new BigInteger(unsignedBytes);
+
+            // Correct the interpretation to positive if necessary
+            if (netBigInteger.Sign < 0)
+            {
+                var positiveBytes = new byte[unsignedBytes.Length + 1];
+                unsignedBytes.CopyTo(positiveBytes, 0);
+                netBigInteger = new BigInteger(positiveBytes);
+            }
+
+            return netBigInteger;
+        }
     }
 
     public class SeededHMacDsaKCalculator : HMacDsaKCalculator

@@ -6,8 +6,8 @@ namespace StarkSharp.Connectors.Components
 {
     public enum CairoVersion
     {
-        Version1 = 1,
-        Version2 = 2
+        Version0 = 0,
+        Version1 = 1
     }
     public class TransactionInteraction
     {
@@ -22,7 +22,7 @@ namespace StarkSharp.Connectors.Components
         public string CallData { get; set; }
         public string EntryPoint { get; set; }
         public string Version { get; set; }
-        public TransactionInteraction(string senderAddress, string contractAddress, string functionName, string[] functionArgs, CairoVersion cairoVersion, string maxFee, string chainId, string privateKey,string version)
+        public TransactionInteraction(string senderAddress, string contractAddress, string functionName, string[] functionArgs, CairoVersion cairoVersion, string maxFee, string chainId, string privateKey, string version)
         {
             SenderAddress = senderAddress;
             ContractAddress = contractAddress;

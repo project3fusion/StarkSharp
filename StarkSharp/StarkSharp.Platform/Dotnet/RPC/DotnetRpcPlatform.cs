@@ -1,11 +1,10 @@
-﻿using System;
-using Newtonsoft.Json;
-using StarkSharp.Connectors.Components;
-using StarkSharp.Rpc;
-
+﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using StarkSharp.Connectors.Components;
+using StarkSharp.Rpc;
 using StarkSharp.Rpc.Modules.Transactions;
 using StarkSharp.Tools.Notification;
 
@@ -17,7 +16,7 @@ namespace StarkSharp.Platforms.Dotnet.RPC
         {
             if (contractInteraction != null)
             {
-                var requestdata = JsonRpcHandler.GenerateContractRequestData(contractInteraction.ContractAdress,contractInteraction.EntryPoint,contractInteraction.CallData);
+                var requestdata = JsonRpcHandler.GenerateContractRequestData(contractInteraction.ContractAdress, contractInteraction.EntryPoint, contractInteraction.CallData);
                 var response = await SendPostRequest(requestdata);
 
                 if (response == null || response.error != null)
@@ -86,16 +85,7 @@ namespace StarkSharp.Platforms.Dotnet.RPC
                 }
                 else
                 {
-                    string resultString = response.result as string;
-                    if (!string.IsNullOrEmpty(resultString))
-                    {
-                        Callback?.Invoke(new JsonRpcResponse { result = resultString });
-                    }
-                    else
-                    {
-
-                        Console.WriteLine(requestData);
-                    }
+                    Callback?.Invoke(response);
                 }
             }
             catch (Exception ex)
