@@ -66,12 +66,12 @@ namespace StarkSharp.Rpc.Modules.Transactions
                         _calldataHash,
                         _maxFee,
                         _chainId,
-                        nonce.ToString(),
+                        _nonce,
                         TransactionHash.Hash.HexToBigInteger(_privateKey)
                     );
                     string r = TransactionHash.Hash.BigIntegerToHex(signature.R);
                     string s = TransactionHash.Hash.BigIntegerToHex(signature.S);
-                    //platform.PlatformLog("Transaction signed. R: " + signature.R + ", S: " + signature.S, NotificationType.Info);
+
                     var transactionRequest = new object[]
                     {
                         new
@@ -82,7 +82,7 @@ namespace StarkSharp.Rpc.Modules.Transactions
                             max_fee = _maxFee,
                             version = "0x1",
                             signature = new string[] { r, s },
-                            nonce = nonce.ToString()
+                            nonce = _nonce
                         }
                     };
 
@@ -115,48 +115,58 @@ namespace StarkSharp.Rpc.Modules.Transactions
         {
             try
             {
-                var result = ((JsonRpcResponse)response).result;
-                var data = ((JArray)result).ToObject<object[]>();
-                if (data == null)
+                var jsonResponse = ((JsonRpcResponse)response);
+                var result = jsonResponse.result;
+                if (result != null)
                 {
-                    platform.PlatformLog("Invalid response or result is null.", NotificationType.Error);
-                    return;
-                }
-                var overalFee = ((JObject)data[0])["overall_fee"];
-                if (overalFee == null)
-                {
-                    platform.PlatformLog("Invalid response or result is null.", NotificationType.Error);
-                    return;
-                }
+                    var data = ((JArray)result).ToObject<object[]>();
+                    if (data == null)
+                    {
+                        platform.PlatformLog("Invalid response or result is null.", NotificationType.Error);
+                        return;
+                    }
+                    var overalFee = ((JObject)data[0])["overall_fee"];
+                    if (overalFee == null)
+                    {
+                        platform.PlatformLog("Invalid response or result is null.", NotificationType.Error);
+                        return;
+                    }
 
-                BigInteger bigIntValue = BigInteger.Parse(((string)overalFee).Substring(2), System.Globalization.NumberStyles.HexNumber);
-                bigIntValue *= 10;
-                string maxFee = "0x" + bigIntValue.ToString("x");
+                    BigInteger bigIntValue = BigInteger.Parse(((string)overalFee).Substring(2), System.Globalization.NumberStyles.HexNumber);
+                    bigIntValue *= 10;
+                    string maxFee = "0x" + bigIntValue.ToString("x");
 
-                ECDSA.ECSignature signature = TransactionHash.Hash.SignInvokeTransaction(
-                            "0x1",
-                            _senderAddress,
-                            _calldataHash,
-                            maxFee,
-                            _chainId,
-                            _nonce,
-                        TransactionHash.Hash.HexToBigInteger(_privateKey)
-                        );
-
-                string r = TransactionHash.Hash.BigIntegerToHex(signature.R);
-                string s = TransactionHash.Hash.BigIntegerToHex(signature.S);
-
-                var _signature = new string[] { r, s };
-
-                var requestData = new JsonRpc
-                {
-                    id = 1,
-                    method = "starknet_addInvokeTransaction",
-                    @params = new object[] { new { type = "INVOKE", sender_address = _senderAddress, calldata = _calldata, max_fee = maxFee, version = "0x1", signature = new string[] { r, s }, nonce = _nonce } }
-                };
-                _platform.PlatformRequest(requestData, rpcresponse =>
-                                OnTransactionSendComplete(platform, rpcresponse)
+                    ECDSA.ECSignature signature = TransactionHash.Hash.SignInvokeTransaction(
+                                "0x1",
+                                _senderAddress,
+                                _calldataHash,
+                                maxFee,
+                                _chainId,
+                                _nonce,
+                            TransactionHash.Hash.HexToBigInteger(_privateKey)
                             );
+
+                    string r = TransactionHash.Hash.BigIntegerToHex(signature.R);
+                    string s = TransactionHash.Hash.BigIntegerToHex(signature.S);
+
+                    var _signature = new string[] { r, s };
+
+                    var requestData = new JsonRpc
+                    {
+                        id = 1,
+                        method = "starknet_addInvokeTransaction",
+                        @params = new object[] { new { type = "INVOKE", sender_address = _senderAddress, calldata = _calldata, max_fee = maxFee, version = "0x1", signature = new string[] { r, s }, nonce = _nonce } }
+                    };
+                    _platform.PlatformRequest(requestData, rpcresponse =>
+                                    OnTransactionSendComplete(platform, rpcresponse)
+                                );
+                }
+                else
+                {
+                    var errorMessage = jsonResponse.error.message;
+                    platform.PlatformLog($"Error getting estimate fee! {errorMessage}", NotificationType.Error);
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -165,18 +175,15 @@ namespace StarkSharp.Rpc.Modules.Transactions
         }
 
 
-        private static void OnTransactionSendComplete(Platform platform, object result)
+
+        private static void OnTransactionSendComplete(Platform platform, object response)
         {
-            JsonRpcResponse response = result as JsonRpcResponse;
-            if (response != null)
+            var jsonResponse = ((JsonRpcResponse)response);
+            if (jsonResponse != null)
             {
-                string jsonResponse = JsonConvert.SerializeObject(response, Formatting.Indented);
-
-                JObject jsonObject = JObject.Parse(jsonResponse);
-
-                if (jsonObject["error"] != null)
+                if (jsonResponse.error != null)
                 {
-                    string errorMessage = jsonObject["error"]["message"]?.ToString() ?? "No error message provided";
+                    var errorMessage = jsonResponse.error.message;
                     platform.PlatformLog($"Transaction send; But Transaction Status Failed! {errorMessage}", NotificationType.Error);
                 }
                 else
