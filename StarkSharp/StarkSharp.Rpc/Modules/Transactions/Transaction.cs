@@ -45,8 +45,8 @@ namespace StarkSharp.Rpc.Modules.Transactions
                     Data = transaction.FunctionArgs
                 }
             };
-            _calldataHash = "0x" + TransactionHash.Hash.ComputeCalldataHash(callArray, 1);
-            _calldata = TransactionHash.Hash.FormatCalldata(callArray, (int)transaction.CairoVersion);
+            _calldataHash = "0x" + TransactionHash.Hash.ComputeCalldataHash(callArray, transaction.CairoVersion);
+            _calldata = TransactionHash.Hash.FormatCalldata(callArray, transaction.CairoVersion);
 
             string[] request = { "latest", _senderAddress };
             return JsonRpcHandler.GenerateRequestData("starknet_getNonce", request);

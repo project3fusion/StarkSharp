@@ -1,5 +1,6 @@
 ﻿using StarkSharp.Rpc.Modules.Transactions.Prefix;
 using StarkSharp.StarkCurve.Signature;
+using StarkSharp.Connectors.Components;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -51,13 +52,13 @@ namespace StarkSharp.Rpc.Modules.Transactions.Hash
                 return calldata.ToArray();
             }
 
-            public static string[] FormatCalldata(Call[] callArray, int cairoVersion)
+            public static string[] FormatCalldata(Call[] callArray, CairoVersion cairoVersion)
             {
-                return cairoVersion == 0 ? FormatCalldataCairo0(callArray) : FormatCalldataOther(callArray);
+                return cairoVersion == CairoVersion.Version0 ? FormatCalldataCairo0(callArray) : FormatCalldataOther(callArray);
             }
-            public static string ComputeCalldataHash(Call[] callArray, int cairoVersion)
+            public static string ComputeCalldataHash(Call[] callArray, CairoVersion cairoVersion)
             {
-                return cairoVersion == 0 ? ComputeCalldataHashCairo0(callArray) : ComputeCalldataHashOther(callArray);
+                return cairoVersion == CairoVersion.Version0 ? ComputeCalldataHashCairo0(callArray) : ComputeCalldataHashOther(callArray);
             }
             public static string ComputeCalldataHashOther(Call[] callArray)
             {
