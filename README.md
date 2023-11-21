@@ -2,19 +2,22 @@
 
 Starksharp is a robust C# toolkit designed to seamlessly integrate C# based applications with Starknet.
 
-<h3>About</h3>
-
-[<img src="https://img.shields.io/badge/Version-0.4-green">](https://starksharp.com)
+[<img src="https://img.shields.io/badge/Version-0.5.1-green">](https://starksharp.com)
 [<img src="https://img.shields.io/badge/Join-Telegram-blue">](https://t.me/starksharp)
+
+> [!WARNING]
+> StarkSharp is NOT audited or reviewed for security at the moment. Use at your own risk.
 
 <h3>Supported platforms</h3>
 
 [<img src="https://img.shields.io/badge/.NET-4.5+-green">](./StarkSharp/StarkSharp.Docs/Platforms/DotNet/Setup.md)
+[<img src="https://img.shields.io/badge/.NET MAUI-.NET 4.5+-green">](./StarkSharp/StarkSharp.Docs/Platforms/DotNet/Setup.md)
 [<img src="https://img.shields.io/badge/ASP.NET-6+-green">](./StarkSharp/StarkSharp.Docs/Platforms/ASP.Net/Setup.md)
 [<img src="https://img.shields.io/badge/CryEngine-5.7+-green">](./StarkSharp/StarkSharp.Docs/Platforms/CryEngine/Setup.md)
 [<img src="https://img.shields.io/badge/Godot-3 LTS+-green">](./StarkSharp/StarkSharp.Docs/Platforms/Godot/Setup.md)
 [<img src="https://img.shields.io/badge/Unity-2020 LTS+-green">](./StarkSharp/StarkSharp.Docs/Platforms/Unity/Setup.md)
-[<img src="https://img.shields.io/badge/WinForms-5+-green">](./StarkSharp/StarkSharp.Docs/Platforms/WinForms/Setup.md) 
+[<img src="https://img.shields.io/badge/UWP-.NET 4.5+-green">](./StarkSharp/StarkSharp.Docs/Platforms/DotNet/Setup.md)
+[<img src="https://img.shields.io/badge/WinForms-5+-green">](./StarkSharp/StarkSharp.Docs/Platforms/WinForms/Setup.md)
 
 <h3>StarkSharp Elements Setup</h3>
 
@@ -31,9 +34,10 @@ Click to badges on [Supported Platforms](./#starksharp-elements-setup) for setup
 
 <h3>Supported Features</h3>
 
+- ABI
 - JSON RPC
 - Stark Curve Signer
-- Websocket Wallet Connection (Sharpion)
+- Web Socket Wallet Connection (Sharpion)
 - Web Wallet Connection
 
 More features coming soon.
