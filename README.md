@@ -5,11 +5,11 @@ Starksharp is a robust C# toolkit designed to seamlessly integrate C# based appl
 [<img src="https://img.shields.io/badge/Version-0.5.1-green">](https://starksharp.com)
 [<img src="https://img.shields.io/badge/Join-Telegram-blue">](https://t.me/starksharp)
 
-> StarkSharp is NOT audited or reviewed for security at the moment. Use at your own risk.
+Important to note that, **StarkSharp is NOT audited or reviewed for security** at the moment. Use at your own risk.
 
 <h3>Supported platforms</h3>
 
-<img src="https://img.shields.io/badge/.NET-4.5+-green"> <img src="https://img.shields.io/badge/.NET MAUI-.NET 4.5+-green"> <img src="https://img.shields.io/badge/ASP.NET-6+-green"> <img src="https://img.shields.io/badge/CryEngine-5.7+-green"> <img src="https://img.shields.io/badge/Godot-3 LTS+-green"> <img src="https://img.shields.io/badge/Unity-2020 LTS+-green"> <img src="https://img.shields.io/badge/UWP-.NET 4.5+-green"> <img src="https://img.shields.io/badge/WinForms-5+-green">
+<img src="https://img.shields.io/badge/.NET-4.5+-green"> <img src="https://img.shields.io/badge/ASP.NET-6+-green"> <img src="https://img.shields.io/badge/CryEngine-5.7+-green"> <img src="https://img.shields.io/badge/Godot-3 LTS+-green"> <img src="https://img.shields.io/badge/Unity-2020 LTS+-green"> <img src="https://img.shields.io/badge/WinForms-5+-green">
 
 <h3>Get Started</h3>
 
