@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using StarkSharp.Connectors.Components;
 using StarkSharp.Tools.Notification;
 
 namespace StarkSharp.Rpc
@@ -12,10 +12,7 @@ namespace StarkSharp.Rpc
         public string jsonrpc { get; } = "2.0";
         public string method { get; set; }
         public object[] @params { get; set; }
-
     }
-    public class TransactionRpc : JsonRpc
-    { }
     public class JsonRpcResponse
     {
         public string jsonrpc { get; set; }
@@ -23,14 +20,19 @@ namespace StarkSharp.Rpc
         public object result { get; set; }
         public JsonRpcError error { get; set; }
     }
+
     public class JsonRpcError
     {
         public int code { get; set; }
         public string message { get; set; }
         public object data { get; set; }
     }
-    public class JsonRpcHandler
+
+     public class JsonRpcHandler
     {
+		public class TransactionRpc : JsonRpc { }
+		public class QueryRpc : JsonRpc { }
+		
         public static JsonRpc GenerateRequestData(string method, object[] data)
         {
             try
@@ -49,7 +51,7 @@ namespace StarkSharp.Rpc
                 Notify.ShowNotification($"Error generating request data: {ex.Message}", NotificationType.Error, NotificationPlatform.Console);
                 return null;
             }
-        }
+
         public static JsonRpc GenerateContractRequestData(string contractAddress, string entryPointSelector, string serializedData)
         {
             try
@@ -115,6 +117,34 @@ namespace StarkSharp.Rpc
             catch (Exception ex)
             {
                 Notify.ShowNotification($"Error generating request data: {ex.Message}", NotificationType.Error, NotificationPlatform.Console);
+                return null;
+            }
+        }
+
+        public static QueryRpc GenerateQueryRequestData(QueryInteraction queryInteraction)
+        {
+            try
+            {
+
+                var transactionRequest = new
+                {
+                    Id = 1,
+                    Jsonrpc = "2.0",
+                    Method = queryInteraction._queryType,
+                    Params = new[]
+                    {
+                        new
+                        {
+                           queryInteraction._query
+                        }
+                    }
+                };
+
+                return JsonConvert.DeserializeObject<QueryRpc>(JsonConvert.SerializeObject(transactionRequest));
+            }
+            catch (Exception ex)
+            {
+                Notify.ShowNotification($"Error generating query request data: {ex.Message}", NotificationType.Error, NotificationPlatform.Console);
                 return null;
             }
         }
