@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarkSharp.Base.Net.Exception;
+using System;
 using static StarkSharp.Base.Net.NetEnum;
 
 namespace StarkSharp.Base.Net
@@ -8,7 +9,7 @@ namespace StarkSharp.Base.Net
         public const string CLIENT_ERROR_CODE = "SomeErrorCode";
     }
 
-    public class ClientError : Exception
+    public class ClientError : NetException
     {
         public string Code { get; }
 

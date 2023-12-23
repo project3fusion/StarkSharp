@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using StarkSharp.Base.Net.Exception;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -66,7 +67,7 @@ namespace StarkSharp.Base.Net
                 return await Request<T>(HttpMethod.Post, method, parameters, payload);
             }
 
-            protected override async Task<T> HandleRequestError<T>(HttpResponseMessage response)
+            public override async Task<T> HandleRequestError<T>(HttpResponseMessage response)
             {
                 throw new ClientError((int)response.StatusCode, await response.Content.ReadAsStringAsync());
             }
@@ -96,7 +97,7 @@ namespace StarkSharp.Base.Net
                 return (T)response["result"];
             }
 
-            protected override async Task<T> HandleRequestError<T>(HttpResponseMessage response)
+            public override async Task<T> HandleRequestError<T>(HttpResponseMessage response)
             {
                 var responseBody = JsonConvert.DeserializeObject<Dictionary<string, object>>(await response.Content.ReadAsStringAsync());
 
@@ -105,16 +106,34 @@ namespace StarkSharp.Base.Net
                     throw new ServerError(responseBody);
                 }
 
-                throw new ClientError((int)responseBody["error"]["code"], (string)responseBody["error"]["message"]);
+                var errorDetails = responseBody["error"] as Dictionary<string, object>;
+                if (errorDetails == null)
+                {
+                    throw new InvalidOperationException("Error details are not in the expected format.");
+                }
+
+                throw new ClientError((int)errorDetails["code"], (string)errorDetails["message"]);
             }
+
 
             private void HandleRpcError(Dictionary<string, object> response)
             {
-                throw new ClientError((int)response["error"]["code"], (string)response["error"]["message"]);
+                if (response.TryGetValue("error", out var errorObject) && errorObject is Dictionary<string, object> errorDetails)
+                {
+                    int errorCode = Convert.ToInt32(errorDetails["code"]);
+                    string errorMessage = errorDetails["message"].ToString();
+
+                    throw new ClientError(errorCode, errorMessage);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Error response does not contain the expected structure.");
+                }
             }
+
         }
 
-        public class ClientError : Exception
+        public class ClientError : NetException
         {
             public ClientError(int code, string message) : base(message)
             {
@@ -124,7 +143,7 @@ namespace StarkSharp.Base.Net
             public int Code { get; }
         }
 
-        public class ServerError : Exception
+        public class ServerError : NetException
         {
             public ServerError(Dictionary<string, object> response) : base((string)response["message"])
             {

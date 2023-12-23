@@ -95,14 +95,22 @@ namespace StarkSharp.Base.Net
         }
         private StatusType ConvertStringToStatusType(string status)
         {
-            if (Enum.TryParse<StatusType>(status, out var statusType))
+            if (Enum.TryParse<StatusEnumType>(status, out var statusEnum))
             {
+                var statusType = new StatusType();
+                switch (statusEnum)
+                {
+                    case StatusEnumType.Status1:
+                        statusType.ExecutionStatus = TransactionExecutionStatus.SUCCEEDED;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(statusEnum), statusEnum, null);
+                }
                 return statusType;
             }
 
             throw new ArgumentException("Invalid status value.");
         }
-
         public abstract EstimatedFee EstimateFee(AccountTransaction tx, NetHash? blockHash = null, int? blockNumber = null);
 
         public abstract List<int> CallContract(NetCall call, NetHash? blockHash = null, int? blockNumber = null);

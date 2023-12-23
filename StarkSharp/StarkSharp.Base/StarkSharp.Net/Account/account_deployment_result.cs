@@ -1,13 +1,11 @@
-﻿
-
+﻿using StarkSharp.Base.Net.Transaction;
 using System;
 
 namespace StarkSharp.Accounts
 {
-    public class AccountDeploymentResult : SentTransaction
+    public class AccountDeploymentResult : BaseTransaction
     {
         public Account Account { get; }
-
         public AccountDeploymentResult(Account account)
             : base()
         {

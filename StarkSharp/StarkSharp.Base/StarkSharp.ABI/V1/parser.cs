@@ -15,12 +15,18 @@ namespace StarknetSharp.Abi
         {
             var abi = JsonConvert.DeserializeObject<AbiDto>(abiJson);
 
-            var functions = abi.Functions.Select(f => new Function(f.Name, f.Inputs, f.Outputs)).ToArray();
-            var events = abi.Events.Select(e => new Event(e.Name, e.Data)).ToArray();
-            var structures = abi.Structures.Select(s => new Struct(s.Name, s.Members)).ToArray();
+            var functions = abi.Functions.Select(f => new Function(f.Name, ConvertParameters(f.Inputs), ConvertParameters(f.Outputs))).ToArray();
+            var events = abi.Events.Select(e => new Event(e.Name, ConvertParameters(e.Data))).ToArray();
+            var structures = abi.Structures.Select(s => new Struct(s.Name, ConvertParameters(s.Members))).ToArray();
 
             return new Abi(functions, events, structures);
         }
+
+        private Parameter[] ConvertParameters(ParameterDto[] parameterDtos)
+        {
+            return parameterDtos.Select(p => new Parameter(p.Name, p.Type)).ToArray();
+        }
+
     }
 
     public class AbiDto
