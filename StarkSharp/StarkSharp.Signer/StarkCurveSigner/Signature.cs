@@ -149,6 +149,48 @@ namespace StarkSharp.StarkCurve.Signature
             return new BigInt(privateKey.ToByteArrayUnsigned());
         }
 
+        // Seed generation
+        // (ref: https://github.com/starkware-libs/cairo-lang/blob/master/src/starkware/crypto/signature/signature.py#L263)
+        public static BigInt GrindKey(BouncyBigInt seed)
+        {
+            BouncyBigInt shamask = new BouncyBigInt(BigInt.Pow(2, 256).ToString());
+            BouncyBigInt order = new BouncyBigInt(EcOrder.ToString());
+            BouncyBigInt limit = shamask.Subtract(shamask.Mod(order));
+            byte[] seedByte = seed.ToByteArrayUnsigned();
+            byte[] msg = new byte[33];
+            Sha256Digest sha256 = new Sha256Digest();
+            byte[] result = new byte[sha256.GetDigestSize()];
+            for (int i = 0; i < 100000; i++) {
+                BigInt bi = new BigInt(i);
+                seedByte.CopyTo(msg, 0);
+                bi.ToByteArray().CopyTo(msg, seedByte.Length);
+                sha256.BlockUpdate(msg, 0, msg.Length);
+                sha256.DoFinal(result, 0);
+
+                BouncyBigInt key = new BouncyBigInt(1, result);
+                if (key.CompareTo(limit) < 0) {
+                    key = key.Mod(order);
+                    byte[] keyByte = key.ToByteArrayUnsigned();
+                    Array.Reverse(keyByte);
+                    return new BigInt(keyByte);
+                }
+            }
+
+            throw new InvalidOperationException("GrindKey is broken: tried 100k vals");
+        }
+
+        // Generate private key from ethereum signature
+        // (ref: https://github.com/paulmillr/scure-starknet/blob/main/index.ts#L143)
+        public static BigInt EthSigToPrivate(string sigHex)
+        {
+            sigHex = sigHex.Replace("0x", "");
+            if (sigHex.Length != 130)
+                throw new ArgumentException("Wrong ethereum signature");
+
+            BouncyBigInt seed = new BouncyBigInt(sigHex.Substring(0, 64), 16);
+            return GrindKey(seed);
+        }
+
         // Obtain public key coordinates from stark curve given the private key
         // (ref: https://github.com/starkware-libs/cairo-lang/blob/master/src/starkware/crypto/signature/signature.py#L104)
         public static MathUtils.ECPoint PrivateKeyToECPointOnStarkCurve(BigInt privKey)
