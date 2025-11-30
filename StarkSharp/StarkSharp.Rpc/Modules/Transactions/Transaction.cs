@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StarkSharp.Connectors.Components;
-using StarkSharp.Platforms;
+using StarkSharp.Core.Interfaces;
 using StarkSharp.Rpc.Modules.Transactions.Hash;
 using StarkSharp.StarkCurve.Signature;
 using StarkSharp.Tools.Notification;
@@ -21,9 +21,9 @@ namespace StarkSharp.Rpc.Modules.Transactions
         private string _calldataHash;
         private string[] _calldata;
         private string _nonce;
-        private readonly Platform _platform;
+        private readonly IPlatform _platform;
 
-        public Transaction(Platform platform)
+        public Transaction(IPlatform platform)
         {
             _platform = platform;
         }
@@ -52,7 +52,7 @@ namespace StarkSharp.Rpc.Modules.Transactions
             return JsonRpcHandler.GenerateRequestData("starknet_getNonce", request);
         }
 
-        public void OnNonceComplete(Platform platform, TransactionInteraction transactionInteraction, object response)
+        public void OnNonceComplete(IPlatform platform, TransactionInteraction transactionInteraction, object response)
         {
             try
             {
@@ -176,7 +176,7 @@ namespace StarkSharp.Rpc.Modules.Transactions
 
 
 
-        private static void OnTransactionSendComplete(Platform platform, object response)
+        private static void OnTransactionSendComplete(IPlatform platform, object response)
         {
             var jsonResponse = ((JsonRpcResponse)response);
             if (jsonResponse != null)

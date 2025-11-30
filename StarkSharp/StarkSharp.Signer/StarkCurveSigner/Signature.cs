@@ -450,15 +450,11 @@ namespace StarkSharp.StarkCurve.Signature
                 return PedersenHashAsPoint().X;
             }
 
-            MathUtils.ECPoint currentPoint = ShiftPoint;
-            foreach (var element in elements)
-            {
-                currentPoint = PedersenHashAsPoint(currentPoint.X, element);
-            }
-            BigInt length = new BigInt(elements.Length);
-            currentPoint = PedersenHashAsPoint(currentPoint.X, length);
-
-            return currentPoint.X;
+            BigInt[] nElements = new BigInt[elements.Length + 1];
+            Array.Copy(elements, nElements, elements.Length);
+            nElements[nElements.Length - 1] = new BigInt(elements.Length);
+            
+            return nElements.Aggregate(new BigInt(0), (x, y) => PedersenHashAsPoint(x, y).X);
         }
 
     }
