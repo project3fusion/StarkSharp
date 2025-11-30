@@ -52,18 +52,18 @@ namespace StarkSharp.Platforms.Unity.RPC
             }
         }
 
-        public override void SendTransaction(Platform platform, TransactionInteraction transactionInteraction, Action<JsonRpcResponse> successCallback, Action<JsonRpcResponse> errorCallback)
+        public override void SendTransaction(TransactionInteraction transactionInteraction, Action<JsonRpcResponse> successCallback, Action<JsonRpcResponse> errorCallback)
         {
             try
             {
                 if (transactionInteraction.FunctionName != null)
                 {
-                    Transaction transaction = new Transaction(platform);
+                    Transaction transaction = new Transaction(this);
                     var requestData = transaction.CreateTransaction(transactionInteraction);
 
                     mb.StartCoroutine(SendPostRequestUnity(requestData, response =>
                     {
-                        transaction.OnNonceComplete(platform, transactionInteraction, response);
+                        transaction.OnNonceComplete(this, transactionInteraction, response);
                     }));
                 }
                 else

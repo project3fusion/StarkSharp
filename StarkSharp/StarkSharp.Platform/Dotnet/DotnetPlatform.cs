@@ -1,9 +1,13 @@
-﻿using StarkSharp.Platforms.Dotnet.RPC;
+﻿using StarkSharp.Core.Interfaces;
+using StarkSharp.Platforms.Dotnet.RPC;
 
 namespace StarkSharp.Platforms.Dotnet
 {
     public class DotnetPlatform : Platform
     {
+        public override PlatformName PlatformName => Core.Interfaces.PlatformName.Dotnet;
+        public override PlatformConnectorType ConnectorType => Core.Interfaces.PlatformConnectorType.RPC;
+
         public static DotnetPlatform New(PlatformConnectorType platformType)
         {
             DotnetPlatform platform;

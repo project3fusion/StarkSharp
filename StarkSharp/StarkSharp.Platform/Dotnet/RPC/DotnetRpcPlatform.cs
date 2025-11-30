@@ -34,7 +34,7 @@ namespace StarkSharp.Platforms.Dotnet.RPC
             }
         }
 
-        public override async void SendTransaction(Platform platform, TransactionInteraction transactionInteraction, Action<JsonRpcResponse> successCallback, Action<JsonRpcResponse> errorCallback)
+        public override async void SendTransaction(TransactionInteraction transactionInteraction, Action<JsonRpcResponse> successCallback, Action<JsonRpcResponse> errorCallback)
         {
             if (transactionInteraction == null || string.IsNullOrEmpty(transactionInteraction.FunctionName))
             {
@@ -47,11 +47,11 @@ namespace StarkSharp.Platforms.Dotnet.RPC
 
             try
             {
-                Transaction transaction = new Transaction(platform);
+                Transaction transaction = new Transaction(this);
                 var requestData = transaction.CreateTransaction(transactionInteraction);
 
                 var response = await SendPostRequest(requestData);
-                transaction.OnNonceComplete(platform, transactionInteraction, response);
+                transaction.OnNonceComplete(this, transactionInteraction, response);
             }
             catch (Exception ex)
             {

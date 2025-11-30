@@ -1,4 +1,5 @@
-﻿using StarkSharp.Platforms.Unity.RPC;
+﻿using StarkSharp.Core.Interfaces;
+using StarkSharp.Platforms.Unity.RPC;
 using StarkSharp.Platforms.Unity.Sharpion;
 using StarkSharp.Platforms.Unity.WebGL;
 
@@ -6,6 +7,9 @@ namespace StarkSharp.Platforms.Unity
 {
     public class UnityPlatform : Platform
     {
+        public override PlatformName PlatformName => Core.Interfaces.PlatformName.Unity;
+        public override PlatformConnectorType ConnectorType => Core.Interfaces.PlatformConnectorType.RPC;
+
         public static UnityPlatform New(PlatformConnectorType platformType) => platformType switch
         {
             PlatformConnectorType.WebGL => new UnityWebGLPlatform(),
