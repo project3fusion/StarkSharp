@@ -2,24 +2,31 @@ using System;
 using Newtonsoft.Json;
 using StarkSharp.Accounts;
 using StarkSharp.Connectors.Components;
+using StarkSharp.Core.Interfaces;
 using StarkSharp.Platforms;
 using StarkSharp.Rpc;
-using static StarkSharp.Platforms.Platform;
 
 namespace StarkSharp.Connectors
 {
-    public class Connector
+    /// <summary>
+    /// Legacy connector implementation - use StarkSharpConnector for new code
+    /// </summary>
+    public class Connector : IConnector
     {
         public Account account;
         public WalletType walletType;
         public Platform platform;
         public PlatformConnectorType connectorType;
 
+        // IConnector implementation
+        public Account Account => account;
+        public WalletType WalletType => walletType;
+        PlatformConnectorType IConnector.ConnectorType => connectorType;
+
         public Connector(Platform platform)
         {
             account = new Account();
             this.platform = platform;
-
         }
 
         public virtual void ConnectWallet(WalletType walletType, Action<string> successCallback, Action<string> failCallback)
@@ -45,7 +52,6 @@ namespace StarkSharp.Connectors
         public virtual void ConnectorSendTransaction(TransactionInteraction transactionInteraction, Action<JsonRpcResponse> successCallback, Action<JsonRpcResponse> failCallback)
         {
             platform.SendTransaction(
-                platform,
                  transactionInteraction,
                  successCallback,
                  failCallback

@@ -51,6 +51,7 @@ namespace StarkSharp.Rpc
                 Notify.ShowNotification($"Error generating request data: {ex.Message}", NotificationType.Error, NotificationPlatform.Console);
                 return null;
             }
+        }
 
         public static JsonRpc GenerateContractRequestData(string contractAddress, string entryPointSelector, string serializedData)
         {
