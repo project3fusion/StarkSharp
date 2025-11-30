@@ -39,12 +39,55 @@ namespace StarkSharp.Base.Net.Transaction
             Unknown
         }
 
-        public class SentTransactionResponse { }
-        public class EstimatedFee { }
+        /// <summary>
+        /// Response after sending a transaction
+        /// </summary>
+        public class SentTransactionResponse
+        {
+            public NetHash TransactionHash { get; set; }
+            public string Status { get; set; }
+        }
 
-        public class NetCall { }
+        /// <summary>
+        /// Estimated fee for a transaction
+        /// </summary>
+        public class EstimatedFee
+        {
+            public string GasConsumed { get; set; }
+            public string GasPrice { get; set; }
+            public string OverallFee { get; set; }
+            public string Unit { get; set; }
+        }
 
-        public class NetInvoke { }
+        /// <summary>
+        /// Represents a contract call
+        /// </summary>
+        public class NetCall
+        {
+            public NetHash ContractAddress { get; set; }
+            public string EntryPointSelector { get; set; }
+            public List<string> Calldata { get; set; }
+        }
+
+        /// <summary>
+        /// Represents an invoke transaction
+        /// </summary>
+        public class NetInvoke
+        {
+            public NetHash SenderAddress { get; set; }
+            public List<Call> Calls { get; set; }
+            public string MaxFee { get; set; }
+            public string Nonce { get; set; }
+            public List<string> Signature { get; set; }
+            public string Version { get; set; }
+        }
+
+        public class Call
+        {
+            public NetHash To { get; set; }
+            public string Selector { get; set; }
+            public List<string> Data { get; set; }
+        }
 
         public class TransactionRejectedError : NetException
         {

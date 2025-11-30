@@ -24,18 +24,11 @@ namespace StarkSharp.Base.Net
 
         public abstract BaseTransaction GetTransaction(NetHash txHash);
 
-        public async Task<TransactionReceipt> GetTransactionReceipt(NetHash txHash)
-        {
-            var receipt = new TransactionReceipt
-            {
-                Id = 1,
-                Jsonrpc = "2.0",
-                Method = "starknet_getTransactionReceipt",
-                Params = new List<string> { txHash.ToString() }
-            };
-
-            return receipt;
-        }
+        /// <summary>
+        /// Gets transaction receipt by hash
+        /// This should be implemented by concrete classes to make actual RPC calls
+        /// </summary>
+        public abstract Task<TransactionReceipt> GetTransactionReceipt(NetHash txHash);
 
         public async Task<TransactionReceipt> WaitForTx(NetHash txHash, bool? waitForAccept = null, float checkInterval = 2, int retries = 500)
         {
