@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using StarkSharp.Base.Net;
 using StarkSharp.Base.Net.Hash;

@@ -27,7 +27,7 @@ namespace StarkSharp.Core.Services
         public async Task<bool> ConnectWalletAsync(WalletType walletType)
         {
             var tcs = new TaskCompletionSource<bool>();
-            var taskId = StarkSharp.Connectors.Components.ConnectorTask.CreateNewTask();
+            var taskId = ConnectorTask.CreateNewTask();
 
             _platform.ConnectWallet(walletType.ToString(), taskId);
 

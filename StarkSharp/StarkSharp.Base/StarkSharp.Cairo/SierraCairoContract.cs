@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace StarkSharp.Base.Cairo
@@ -10,10 +10,10 @@ namespace StarkSharp.Base.Cairo
     {
         public string ContractClassVersion { get; set; }
         public List<string> SierraProgram { get; set; }
-        public EntryPoints EntryPoints { get; set; }
+        public SierraEntryPoints EntryPoints { get; set; }
         public List<string> Abi { get; set; }
 
-        public class EntryPoints
+        public class SierraEntryPoints
         {
             public List<EntryPoint> Constructor { get; set; }
             public List<EntryPoint> External { get; set; }
