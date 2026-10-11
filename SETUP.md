@@ -4,17 +4,56 @@ StarkSharp is a pure C# / .NET SDK designed to interact with Starknet. It has no
 
 ## Quick Start
 
-### 1. RPC API Endpoint
+### 1. RPC API & Full-Node Endpoints
 
-Default endpoint: Public Starknet Sepolia RPC (`https://api.cartridge.gg/x/starknet/sepolia`).
+StarkSharp comes pre-configured with official, modern Starknet endpoints aligned with [Starknet Full-Nodes & RPC Services](https://www.starknet.io/fullnodes-rpc-services/):
 
-Configure custom endpoint at startup:
+#### A. Free Public RPC Endpoints (Default: Cartridge)
 ```csharp
 using StarkSharp.Api.RPC;
 
-RpcSettingsProvider.SetApiUrl("https://api.cartridge.gg/x/starknet/sepolia");
-// Or switch to Mainnet:
-// RpcSettingsProvider.SetNetwork(StarknetNetwork.Mainnet);
+// Default: Cartridge Sepolia (https://api.cartridge.gg/x/starknet/sepolia)
+// Switch to Mainnet:
+RpcSettingsProvider.SetNetwork(StarknetNetwork.Mainnet);
+
+// Or use community public endpoints directly:
+RpcSettingsProvider.SetApiUrl(RpcSettingsProvider.DrpcSepolia);
+RpcSettingsProvider.SetApiUrl(RpcSettingsProvider.PublicNodeMainnet);
+RpcSettingsProvider.SetApiUrl(RpcSettingsProvider.OnFinalityMainnet);
+RpcSettingsProvider.SetApiUrl(RpcSettingsProvider.ZanMainnet);
+```
+
+#### B. Local Self-Hosted Full Nodes (Pathfinder, Juno, Madara)
+Run your own full node for maximum decentralization and zero-latency reads:
+```csharp
+// Pathfinder (Rust node by Software Mansion - http://localhost:9545)
+// Repo: https://github.com/software-mansion/pathfinder
+RpcSettingsProvider.UseLocalPathfinder();
+
+// Juno (Go node by Nethermind - http://localhost:6060)
+// Repo: https://github.com/NethermindEth/juno
+RpcSettingsProvider.UseLocalJuno();
+
+// Madara (Starknet client by Madara Alliance - http://localhost:9944)
+// Repo: https://github.com/madara-alliance/madara
+RpcSettingsProvider.UseLocalMadara();
+```
+
+#### C. Dedicated Hosted Providers (BoltRPC, Alchemy, Infura, QuickNode)
+```csharp
+// BoltRPC (https://boltrpc.io/networks/starknet) - HTTPS & WebSocket
+string boltHttps = RpcSettingsProvider.GetBoltRpcUrl("YOUR_API_KEY", StarknetNetwork.Mainnet);
+string boltWs    = RpcSettingsProvider.GetBoltRpcWsUrl("YOUR_API_KEY", StarknetNetwork.Mainnet);
+RpcSettingsProvider.SetApiUrl(boltHttps);
+
+// Alchemy
+RpcSettingsProvider.SetApiUrl(RpcSettingsProvider.GetAlchemyUrl("YOUR_API_KEY", StarknetNetwork.Sepolia));
+
+// Infura
+RpcSettingsProvider.SetApiUrl(RpcSettingsProvider.GetInfuraUrl("YOUR_API_KEY", StarknetNetwork.Mainnet));
+
+// QuickNode
+RpcSettingsProvider.SetApiUrl(RpcSettingsProvider.GetQuickNodeUrl("endpoint-name", "endpoint-token"));
 ```
 
 ### 2. Building and Testing

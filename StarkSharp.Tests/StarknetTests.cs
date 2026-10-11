@@ -276,5 +276,44 @@ namespace StarkSharp.Tests
             Assert.Contains("0xBuyer", interaction.CallData);
             Assert.Contains("0x2a", interaction.CallData); // 42 in hex
         }
+
+        [Fact]
+        public void RpcSettingsProvider_LocalFullNodesAndHostedUrls_AreFormattedCorrectly()
+        {
+            // Local full nodes
+            RpcSettingsProvider.UseLocalPathfinder();
+            Assert.Equal(RpcSettingsProvider.PathfinderLocal, RpcSettingsProvider.ApiUrl);
+
+            RpcSettingsProvider.UseLocalJuno();
+            Assert.Equal(RpcSettingsProvider.JunoLocal, RpcSettingsProvider.ApiUrl);
+
+            RpcSettingsProvider.UseLocalMadara();
+            Assert.Equal(RpcSettingsProvider.MadaraLocal, RpcSettingsProvider.ApiUrl);
+
+            // BoltRPC endpoints
+            string boltMainnet = RpcSettingsProvider.GetBoltRpcUrl("test_key", StarknetNetwork.Mainnet);
+            Assert.Equal("https://endpoints.boltrpc.io/rpc/test_key/starknet", boltMainnet);
+
+            string boltSepolia = RpcSettingsProvider.GetBoltRpcUrl("test_key", StarknetNetwork.Sepolia);
+            Assert.Equal("https://endpoints.boltrpc.io/rpc/test_key/starknet-sepolia", boltSepolia);
+
+            string boltWs = RpcSettingsProvider.GetBoltRpcWsUrl("test_key", StarknetNetwork.Mainnet);
+            Assert.Equal("wss://endpoints.boltrpc.io/ws/test_key/starknet", boltWs);
+
+            // Alchemy and Infura
+            string alchemy = RpcSettingsProvider.GetAlchemyUrl("key123", StarknetNetwork.Sepolia);
+            Assert.Equal("https://starknet-sepolia.g.alchemy.com/v2/key123", alchemy);
+
+            string infura = RpcSettingsProvider.GetInfuraUrl("key123", StarknetNetwork.Mainnet);
+            Assert.Equal("https://starknet-mainnet.infura.io/v3/key123", infura);
+
+            // QuickNode
+            string qn = RpcSettingsProvider.GetQuickNodeUrl("my-node", "my-token");
+            Assert.Equal("https://my-node.quiknode.pro/my-token/", qn);
+
+            // Reset back to Sepolia
+            RpcSettingsProvider.SetNetwork(StarknetNetwork.Sepolia);
+            Assert.Equal(RpcSettingsProvider.DefaultSepoliaRpc, RpcSettingsProvider.ApiUrl);
+        }
     }
 }
