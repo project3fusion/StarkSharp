@@ -6,13 +6,15 @@ StarkSharp is a pure C# / .NET SDK designed to interact with Starknet. It has no
 
 ### 1. RPC API Endpoint
 
-Default endpoint: Public Starknet Sepolia RPC (`https://free-rpc.nethermind.io/sepolia-juno`).
+Default endpoint: Public Starknet Sepolia RPC (`https://api.cartridge.gg/x/starknet/sepolia`).
 
 Configure custom endpoint at startup:
 ```csharp
 using StarkSharp.Api.RPC;
 
-RpcSettingsProvider.SetApiUrl("https://your-starknet-rpc-endpoint...");
+RpcSettingsProvider.SetApiUrl("https://api.cartridge.gg/x/starknet/sepolia");
+// Or switch to Mainnet:
+// RpcSettingsProvider.SetNetwork(StarknetNetwork.Mainnet);
 ```
 
 ### 2. Building and Testing
@@ -35,7 +37,7 @@ using StarkSharp.Core.Configuration;
 var services = new ServiceCollection();
 services.AddStarkSharp(new StarkSharpOptions
 {
-    RpcUrl = "https://free-rpc.nethermind.io/sepolia-juno"
+    RpcUrl = "https://api.cartridge.gg/x/starknet/sepolia"
 });
 ```
 

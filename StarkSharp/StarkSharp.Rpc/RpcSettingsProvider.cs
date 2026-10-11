@@ -15,23 +15,23 @@ namespace StarkSharp.Api.RPC
     /// </summary>
     public static class RpcSettingsProvider
     {
-        // --- Well-Known Public & Community Endpoints ---
+        // --- Well-Known Modern Public & Community Endpoints ---
+        public const string CartridgeSepolia = "https://api.cartridge.gg/x/starknet/sepolia";
+        public const string CartridgeMainnet = "https://api.cartridge.gg/x/starknet/mainnet";
+
+        public const string DrpcSepolia = "https://starknet-sepolia.drpc.org";
+        public const string DrpcMainnet = "https://starknet.drpc.org";
+
         public const string PublicNodeSepolia = "https://starknet-sepolia-rpc.publicnode.com";
         public const string PublicNodeMainnet = "https://starknet-rpc.publicnode.com";
-
-        public const string NethermindSepolia = "https://free-rpc.nethermind.io/sepolia-juno";
-        public const string NethermindMainnet = "https://free-rpc.nethermind.io/mainnet-juno";
-
-        public const string BlastSepolia = "https://starknet-sepolia.public.blastapi.io";
-        public const string BlastMainnet = "https://starknet-mainnet.public.blastapi.io";
 
         // --- Chain IDs (felt hex representations) ---
         public const string ChainIdMainnet = "0x534e5f4d41494e"; // "SN_MAIN"
         public const string ChainIdSepolia = "0x534e5f5345504f4c4941"; // "SN_SEPOLIA"
 
-        // Default: Nethermind Sepolia Juno RPC
-        public const string DefaultSepoliaRpc = NethermindSepolia;
-        public const string DefaultMainnetRpc = NethermindMainnet;
+        // Default: Official Cartridge RPC (free, fast, community-standard)
+        public const string DefaultSepoliaRpc = CartridgeSepolia;
+        public const string DefaultMainnetRpc = CartridgeMainnet;
 
         private static string _apiUrl = DefaultSepoliaRpc;
         private static StarknetNetwork _network = StarknetNetwork.Sepolia;
