@@ -1,4 +1,5 @@
-﻿using StarkSharp.Base.Net.Exception;
+using StarkSharp.Base.Net.Exception;
+using StarkSharp.Base.Net.Hash;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +68,27 @@ namespace StarkSharp.Base.Net.Transaction
             public NetHash ContractAddress { get; set; }
             public string EntryPointSelector { get; set; }
             public List<string> Calldata { get; set; }
+
+            public NetCall() { }
+
+            public NetCall(NetHash contractAddress, string entryPointSelector, List<string> calldata = null)
+            {
+                ContractAddress = contractAddress;
+                EntryPointSelector = entryPointSelector;
+                Calldata = calldata ?? new List<string>();
+            }
+
+            public NetCall(NetHash contractAddress, global::StarkSharp.Rpc.Utils.ContractFunction function, List<string> calldata = null)
+                : this(contractAddress, global::StarkSharp.Rpc.Utils.ContractFunctionExtensions.ToSelector(function), calldata) { }
+
+            public NetCall(NetHash contractAddress, global::StarkSharp.Rpc.Utils.ERC20Function function, List<string> calldata = null)
+                : this(contractAddress, global::StarkSharp.Rpc.Utils.ContractFunctionExtensions.ToSelector(function), calldata) { }
+
+            public NetCall(NetHash contractAddress, global::StarkSharp.Rpc.Utils.ERC721Function function, List<string> calldata = null)
+                : this(contractAddress, global::StarkSharp.Rpc.Utils.ContractFunctionExtensions.ToSelector(function), calldata) { }
+
+            public NetCall(NetHash contractAddress, global::StarkSharp.Rpc.Utils.AccountFunction function, List<string> calldata = null)
+                : this(contractAddress, global::StarkSharp.Rpc.Utils.ContractFunctionExtensions.ToSelector(function), calldata) { }
         }
 
         /// <summary>
@@ -87,6 +109,27 @@ namespace StarkSharp.Base.Net.Transaction
             public NetHash To { get; set; }
             public string Selector { get; set; }
             public List<string> Data { get; set; }
+
+            public Call() { }
+
+            public Call(NetHash to, string selector, List<string> data = null)
+            {
+                To = to;
+                Selector = selector;
+                Data = data ?? new List<string>();
+            }
+
+            public Call(NetHash to, global::StarkSharp.Rpc.Utils.ContractFunction function, List<string> data = null)
+                : this(to, global::StarkSharp.Rpc.Utils.ContractFunctionExtensions.ToSelector(function), data) { }
+
+            public Call(NetHash to, global::StarkSharp.Rpc.Utils.ERC20Function function, List<string> data = null)
+                : this(to, global::StarkSharp.Rpc.Utils.ContractFunctionExtensions.ToSelector(function), data) { }
+
+            public Call(NetHash to, global::StarkSharp.Rpc.Utils.ERC721Function function, List<string> data = null)
+                : this(to, global::StarkSharp.Rpc.Utils.ContractFunctionExtensions.ToSelector(function), data) { }
+
+            public Call(NetHash to, global::StarkSharp.Rpc.Utils.AccountFunction function, List<string> data = null)
+                : this(to, global::StarkSharp.Rpc.Utils.ContractFunctionExtensions.ToSelector(function), data) { }
         }
 
         public class TransactionRejectedError : NetException

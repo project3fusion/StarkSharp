@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using StarkSharp.Rpc.Utils;
 
 namespace StarkSharp.Connectors.Components
@@ -22,5 +22,29 @@ namespace StarkSharp.Connectors.Components
             EntryPoint = StarknetOps.CalculateFunctionSelector(_EntryPoint);
             CallData = _CallData;
         }
+
+        public ContractInteraction(string contractAddress, ContractFunction function, object callData)
+            : this(contractAddress, function.ToFunctionName(), callData) { }
+
+        public ContractInteraction(string contractAddress, ContractFunction function, string callData)
+            : this(contractAddress, function.ToFunctionName(), callData) { }
+
+        public ContractInteraction(string contractAddress, ERC20Function function, object callData)
+            : this(contractAddress, function.ToFunctionName(), callData) { }
+
+        public ContractInteraction(string contractAddress, ERC20Function function, string callData)
+            : this(contractAddress, function.ToFunctionName(), callData) { }
+
+        public ContractInteraction(string contractAddress, ERC721Function function, object callData)
+            : this(contractAddress, function.ToFunctionName(), callData) { }
+
+        public ContractInteraction(string contractAddress, ERC721Function function, string callData)
+            : this(contractAddress, function.ToFunctionName(), callData) { }
+
+        public ContractInteraction(string contractAddress, AccountFunction function, object callData)
+            : this(contractAddress, function.ToFunctionName(), callData) { }
+
+        public ContractInteraction(string contractAddress, AccountFunction function, string callData)
+            : this(contractAddress, function.ToFunctionName(), callData) { }
     }
 }

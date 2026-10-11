@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Numerics;
 using StarkSharp.Library.Nethereum.SHA3Keccak;
@@ -121,6 +121,18 @@ namespace StarkSharp.Rpc.Utils
                 return $"An error occurred: {ex.Message}";
             }
         }
+
+        public static string CalculateFunctionSelector(ContractFunction function) =>
+            CalculateFunctionSelector(function.ToFunctionName());
+
+        public static string CalculateFunctionSelector(ERC20Function function) =>
+            CalculateFunctionSelector(function.ToFunctionName());
+
+        public static string CalculateFunctionSelector(ERC721Function function) =>
+            CalculateFunctionSelector(function.ToFunctionName());
+
+        public static string CalculateFunctionSelector(AccountFunction function) =>
+            CalculateFunctionSelector(function.ToFunctionName());
 
         // Determine the selector based on input
         public static string DetermineSelector(string input)

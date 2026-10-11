@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using StarkSharp.Rpc.Utils;
 using System.Collections.Generic;
 
@@ -39,5 +39,29 @@ namespace StarkSharp.Connectors.Components
             EntryPoint = StarknetOps.CalculateFunctionSelector(_EntryPoint);
             CallData = JsonConvert.SerializeObject(_CallData);
         }
+
+        public TransactionInteraction(string senderAddress, string contractAddress, ContractFunction function, string[] functionArgs, CairoVersion cairoVersion, string maxFee, string chainId, string privateKey, string version)
+            : this(senderAddress, contractAddress, function.ToFunctionName(), functionArgs, cairoVersion, maxFee, chainId, privateKey, version) { }
+
+        public TransactionInteraction(string senderAddress, string contractAddress, ERC20Function function, string[] functionArgs, CairoVersion cairoVersion, string maxFee, string chainId, string privateKey, string version)
+            : this(senderAddress, contractAddress, function.ToFunctionName(), functionArgs, cairoVersion, maxFee, chainId, privateKey, version) { }
+
+        public TransactionInteraction(string senderAddress, string contractAddress, ERC721Function function, string[] functionArgs, CairoVersion cairoVersion, string maxFee, string chainId, string privateKey, string version)
+            : this(senderAddress, contractAddress, function.ToFunctionName(), functionArgs, cairoVersion, maxFee, chainId, privateKey, version) { }
+
+        public TransactionInteraction(string senderAddress, string contractAddress, AccountFunction function, string[] functionArgs, CairoVersion cairoVersion, string maxFee, string chainId, string privateKey, string version)
+            : this(senderAddress, contractAddress, function.ToFunctionName(), functionArgs, cairoVersion, maxFee, chainId, privateKey, version) { }
+
+        public TransactionInteraction(ContractFunction function, object _CallData, List<string> data = null)
+            : this(function.ToFunctionName(), _CallData, data) { }
+
+        public TransactionInteraction(ERC20Function function, object _CallData, List<string> data = null)
+            : this(function.ToFunctionName(), _CallData, data) { }
+
+        public TransactionInteraction(ERC721Function function, object _CallData, List<string> data = null)
+            : this(function.ToFunctionName(), _CallData, data) { }
+
+        public TransactionInteraction(AccountFunction function, object _CallData, List<string> data = null)
+            : this(function.ToFunctionName(), _CallData, data) { }
     }
 }
