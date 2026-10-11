@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StarkSharp.Connectors.Components;
 using StarkSharp.Core.Interfaces;
@@ -111,7 +111,7 @@ namespace StarkSharp.Rpc.Modules.Transactions
             }
         }
 
-        private void OnEstimateFeeComplete(Platform platform, object response)
+        private void OnEstimateFeeComplete(IPlatform platform, object response)
         {
             try
             {

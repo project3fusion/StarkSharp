@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StarkSharp.Connectors.Components;
@@ -19,6 +19,28 @@ namespace StarkSharp.Rpc
         public int id { get; set; }
         public object result { get; set; }
         public JsonRpcError error { get; set; }
+
+        [JsonIgnore]
+        public bool HasError => error != null;
+
+        [JsonIgnore]
+        public string[]? ResultAsArray => result switch
+        {
+            JArray jArray => jArray.ToObject<string[]>(),
+            string[] strArray => strArray,
+            _ => null
+        };
+
+        [JsonIgnore]
+        public string? ResultAsString => result?.ToString();
+
+        public T? GetResult<T>()
+        {
+            if (result == null) return default;
+            if (result is JToken token) return token.ToObject<T>();
+            if (result is T typed) return typed;
+            return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(result));
+        }
     }
 
     public class JsonRpcError

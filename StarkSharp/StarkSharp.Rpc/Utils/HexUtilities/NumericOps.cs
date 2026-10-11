@@ -1,24 +1,36 @@
-﻿using System;
+using System;
+using System.Globalization;
 using System.Numerics;
 using System.Text.RegularExpressions;
 
 namespace StarkSharp.Rpc.Utils
 {
-    public class NumericOps
+    public static class NumericOps
     {
         public static BigInteger StringToBigInt(string inputValue)
         {
+            if (string.IsNullOrWhiteSpace(inputValue))
+                throw new ArgumentException("The provided string cannot be null or empty.", nameof(inputValue));
+
+            inputValue = inputValue.Trim();
+
             try
             {
-                return BigInteger.Parse(inputValue);
+                if (inputValue.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                {
+                    string hex = inputValue.Substring(2);
+                    if (string.IsNullOrEmpty(hex)) return BigInteger.Zero;
+                    return BigInteger.Parse("0" + hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                }
+                return BigInteger.Parse(inputValue, NumberStyles.Integer, CultureInfo.InvariantCulture);
             }
             catch (FormatException fe)
             {
-                throw new ArgumentException("The provided string cannot be converted to BigInteger.", fe);
+                throw new ArgumentException($"The provided string '{inputValue}' cannot be converted to BigInteger.", fe);
             }
         }
 
-        public static bool IsOfBigIntegerType(object testObject)
+        public static bool IsOfBigIntegerType(object? testObject)
         {
             return testObject is BigInteger;
         }
@@ -36,35 +48,39 @@ namespace StarkSharp.Rpc.Utils
 
         public static string ByteArrayToHexPresentation(byte[] dataArray)
         {
+            if (dataArray == null || dataArray.Length == 0) return "0x0";
             return ComposeHex(BitConverter.ToString(dataArray).Replace("-", "").ToLowerInvariant());
         }
 
         public static bool IsPureNumber(string checkStr)
         {
-            return Regex.IsMatch(checkStr, @"^\d+$");
+            if (string.IsNullOrWhiteSpace(checkStr)) return false;
+            return Regex.IsMatch(checkStr.Trim(), @"^\d+$");
         }
 
         public static bool IsHexFormatValid(string potentialHex)
         {
-            return Regex.IsMatch(potentialHex, @"^0x[0-9a-fA-F]+$");
+            if (string.IsNullOrWhiteSpace(potentialHex)) return false;
+            return Regex.IsMatch(potentialHex.Trim(), @"^0x[0-9a-fA-F]+$");
         }
 
         public static string TransformHexToDecimalStr(string hexVal)
         {
             VerifyHexCorrectness(hexVal);
-            return StringToBigInt(hexVal).ToString();
+            return StringToBigInt(hexVal).ToString(CultureInfo.InvariantCulture);
         }
 
         private static string ComposeHex(string baseHex)
         {
-            return $"0x{baseHex}";
+            if (string.IsNullOrEmpty(baseHex)) return "0x0";
+            return baseHex.StartsWith("0x", StringComparison.OrdinalIgnoreCase) ? baseHex : $"0x{baseHex}";
         }
 
         private static void VerifyHexCorrectness(string potentialHex)
         {
             if (!IsHexFormatValid(potentialHex))
             {
-                throw new InvalidOperationException("The provided string doesn't represent a valid hexadecimal format.");
+                throw new InvalidOperationException($"The provided string '{potentialHex}' doesn't represent a valid hexadecimal format.");
             }
         }
     }

@@ -75,10 +75,10 @@ namespace StarkSharp.Tools.Exception
 
         // Cryptographic Errors (8000-8999)
         CryptographicError = 8000,
-        InvalidSignature = 8001,
+        InvalidCryptoSignature = 8001,
         SignatureGenerationFailed = 8002,
         InvalidPublicKey = 8003,
-        InvalidPrivateKey = 8004,
+        InvalidCryptoPrivateKey = 8004,
         HashCalculationFailed = 8005,
         PedersenHashError = 8006,
 

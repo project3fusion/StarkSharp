@@ -38,8 +38,45 @@ namespace StarkSharp.StarkCurve.Signature
 
     public static class ECDSA
     {
-        private const string PedersenHashPointFilename = "StarkSharp\\StarkSharp.Signer\\StarkCurveSigner\\pedersen_params.json"; // Hey, Adjust according to your File Directory
-        private static readonly StarkCurveParameters PedersenParams = JsonConvert.DeserializeObject<StarkCurveParameters>(File.ReadAllText(PedersenHashPointFilename));
+        private const string PedersenHashPointFilename = "StarkSharp\\StarkSharp.Signer\\StarkCurveSigner\\pedersen_params.json";
+        private static readonly StarkCurveParameters PedersenParams = LoadPedersenParams();
+
+        private static StarkCurveParameters LoadPedersenParams()
+        {
+            var assembly = typeof(ECDSA).Assembly;
+            var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith("pedersen_params.json", StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrEmpty(resourceName))
+            {
+                using (var stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    if (stream != null)
+                    {
+                        using (var reader = new StreamReader(stream))
+                        {
+                            return JsonConvert.DeserializeObject<StarkCurveParameters>(reader.ReadToEnd());
+                        }
+                    }
+                }
+            }
+
+            string[] searchPaths = new[]
+            {
+                PedersenHashPointFilename,
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "pedersen_params.json"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "StarkSharp.Signer", "StarkCurveSigner", "pedersen_params.json"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "StarkSharp", "StarkSharp.Signer", "StarkCurveSigner", "pedersen_params.json")
+            };
+
+            foreach (var path in searchPaths)
+            {
+                if (File.Exists(path))
+                {
+                    return JsonConvert.DeserializeObject<StarkCurveParameters>(File.ReadAllText(path));
+                }
+            }
+
+            throw new FileNotFoundException("Unable to locate pedersen_params.json as embedded resource or file.");
+        }
 
         // Field parameters.
         public static readonly BigInt FieldPrime = PedersenParams.FieldPrime;

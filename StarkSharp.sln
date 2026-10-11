@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarkSharp", "StarkSharp\StarkSharp.csproj", "{C748AF7C-CA41-4713-9155-FD0F5E2DA2F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarkSharp.Tests", "StarkSharp.Tests\StarkSharp.Tests.csproj", "{36B9A575-0756-4D2C-9A7E-48DE401C1518}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C748AF7C-CA41-4713-9155-FD0F5E2DA2F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C748AF7C-CA41-4713-9155-FD0F5E2DA2F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C748AF7C-CA41-4713-9155-FD0F5E2DA2F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C748AF7C-CA41-4713-9155-FD0F5E2DA2F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36B9A575-0756-4D2C-9A7E-48DE401C1518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36B9A575-0756-4D2C-9A7E-48DE401C1518}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36B9A575-0756-4D2C-9A7E-48DE401C1518}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36B9A575-0756-4D2C-9A7E-48DE401C1518}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using StarkSharp.Base.Net;
 using StarkSharp.Base.Net.Exception;
 using StarkSharp.Rpc;
 using StarkSharp.Tools.Notification;
@@ -52,15 +53,15 @@ namespace StarkSharp.Tools.Exception
                 JsonRpcException rpcEx => HandleJsonRpcException(rpcEx),
                 
                 // Base.Net exceptions
-                NetException netEx => new StarkSharpException(
-                    StarkSharpErrorCode.NetworkError,
-                    $"Network error: {netEx.Message}",
-                    netEx
-                ),
                 ClientError clientEx => new StarkSharpException(
                     StarkSharpErrorCode.ClientError,
                     $"Client error: {clientEx.Message}",
                     clientEx
+                ),
+                NetException netEx => new StarkSharpException(
+                    StarkSharpErrorCode.NetworkError,
+                    $"Network error: {netEx.Message}",
+                    netEx
                 ),
 
                 // Standard .NET exceptions
@@ -91,15 +92,15 @@ namespace StarkSharp.Tools.Exception
                 ),
 
                 // JSON exceptions
-                JsonException jsonEx => new StarkSharpException(
-                    StarkSharpErrorCode.JsonParseError,
-                    $"JSON error: {jsonEx.Message}",
-                    jsonEx
-                ),
                 JsonSerializationException jsonSerEx => new StarkSharpException(
                     StarkSharpErrorCode.SerializationError,
                     $"JSON serialization error: {jsonSerEx.Message}",
                     jsonSerEx
+                ),
+                JsonException jsonEx => new StarkSharpException(
+                    StarkSharpErrorCode.JsonParseError,
+                    $"JSON error: {jsonEx.Message}",
+                    jsonEx
                 ),
 
                 // Cryptographic exceptions

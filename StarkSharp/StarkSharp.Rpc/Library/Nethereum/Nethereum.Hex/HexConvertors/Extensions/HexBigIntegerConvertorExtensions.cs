@@ -22,11 +22,11 @@ namespace Nethereum.Hex.HexConvertors.Extensions
 
         public static byte[] ConvertToByteArray(this BigInteger value, bool littleEndian)
         {
-            byte[] bytes;
+            byte[] bytes = value.ToByteArray();
             if (BitConverter.IsLittleEndian != littleEndian)
-                bytes = value.ToByteArray().Reverse().ToArray();
-            else
-                bytes = value.ToByteArray().ToArray();
+            {
+                Array.Reverse(bytes);
+            }
             return bytes;
         }
 
@@ -58,7 +58,9 @@ namespace Nethereum.Hex.HexConvertors.Extensions
             {
                 var listEncoded = encoded.ToList();
                 listEncoded.Insert(0, 0x00);
-                encoded = listEncoded.ToArray().Reverse().ToArray();
+                byte[] reversed = listEncoded.ToArray();
+                Array.Reverse(reversed);
+                encoded = reversed;
             }
             return new BigInteger(encoded);
         }
