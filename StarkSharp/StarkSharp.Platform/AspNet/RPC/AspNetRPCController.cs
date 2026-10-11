@@ -15,7 +15,7 @@ public class AspNetRPCController : AspNetPlatform
     {
         if (contractInteraction != null)
         {
-            var RequestData = JsonRpcHandler.GenerateRequestData(contractInteraction.ContractAdress, contractInteraction.EntryPoint, contractInteraction.CallData);
+            var RequestData = JsonRpcHandler.GenerateContractRequestData(contractInteraction.ContractAdress, contractInteraction.EntryPoint, contractInteraction.CallData);
             var response = await SendPostRequest(RequestData);
             if (response == null || response.error != null)
             {

@@ -1,53 +1,109 @@
-﻿using System;
-using System.Diagnostics;
-
-using WebSocketSharp;
-
-using StarkSharp.Fusion.Sharpion.Dotnet.Handlers;
-using System.Numerics;
-using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Net.WebSockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using StarkSharp.Connectors.Components;
+using StarkSharp.Fusion.Sharpion.Dotnet.Handlers;
 
 namespace StarkSharp.Fusion.Sharpion.Dotnet
 {
     public class Client
     {
-        public static Client instance;
-        public static WebSocket ws;
+        public static Client instance = new Client();
+        private ClientWebSocket _ws;
+        private CancellationTokenSource _cts;
 
         public static int SocketClientID;
         public string UserWalletAddress;
         public string UserBalanceOfEth;
 
-        public void ConnectToServer() {
-
-            ws = new WebSocket($"ws://{Settings.Settings.webSocketipandport}");
-
-            // Event handlers
-            ws.OnMessage += async (sender, e) => await Handler.HandShake(e.Data);
-            ws.OnOpen += (sender, e) => Console.WriteLine("WebSocket Connection Open.");
-            ws.OnClose += (sender, e) => Console.WriteLine("WebSocket Connection Close.");
-            ws.OnError += (sender, e) => Console.WriteLine($"WebSocket Connection Error: {e.Message}");
-
-            ws.Connect();
-        }
-        public void DisconnectFromServer()
+        public async void ConnectToServer()
         {
-            if (ws != null && ws.ReadyState == WebSocketState.Open)
+            try
             {
-                ws.Close();
-                Console.WriteLine("The WebSocket connection was closed manually.");
+                _cts = new CancellationTokenSource();
+                _ws = new ClientWebSocket();
+                Uri serverUri = new Uri($"ws://{Settings.Settings.webSocketipandport}");
+                await _ws.ConnectAsync(serverUri, _cts.Token);
+                Console.WriteLine("WebSocket Connection Open.");
+                _ = Task.Run(() => ReceiveLoopAsync(_cts.Token));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"WebSocket Connection Error: {ex.Message}");
             }
         }
-        public bool IsSocketAlive() => ws?.IsAlive ?? false;
+
+        private async Task ReceiveLoopAsync(CancellationToken cancellationToken)
+        {
+            var buffer = new byte[8192];
+            try
+            {
+                while (_ws != null && _ws.State == WebSocketState.Open && !cancellationToken.IsCancellationRequested)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        WebSocketReceiveResult result;
+                        do
+                        {
+                            result = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
+                            if (result.MessageType == WebSocketMessageType.Close)
+                            {
+                                await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closed by server", cancellationToken);
+                                Console.WriteLine("WebSocket Connection Close.");
+                                return;
+                            }
+                            ms.Write(buffer, 0, result.Count);
+                        } while (!result.EndOfMessage);
+
+                        string message = Encoding.UTF8.GetString(ms.ToArray());
+                        await Handler.HandShake(message);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Expected on disconnect
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"WebSocket Receive Error: {ex.Message}");
+            }
+        }
+
+        public async void DisconnectFromServer()
+        {
+            try
+            {
+                _cts?.Cancel();
+                if (_ws != null && _ws.State == WebSocketState.Open)
+                {
+                    await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closed manually", CancellationToken.None);
+                    Console.WriteLine("The WebSocket connection was closed manually.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error closing WebSocket: {ex.Message}");
+            }
+            finally
+            {
+                _ws?.Dispose();
+                _ws = null;
+            }
+        }
+
+        public bool IsSocketAlive() => _ws != null && _ws.State == WebSocketState.Open;
 
         public void ConnectWallet() => instance.SendDataFromJson(JsonConvert.SerializeObject(Packs.CreateLoginPack(false, false)));
         public void DisconnectWallet() => instance.SendDataFromJson(JsonConvert.SerializeObject(Packs.CreateDisconnectPack(SocketClientID, false, false)));
         public void BalanceOfWallet(string WalletAdress) => instance.SendDataFromJson(JsonConvert.SerializeObject(Packs.CreateBalanceOfPack(SocketClientID, WalletAdress)));
         public void SendTransaction(TransactionInteraction transactionInteraction) => instance.SendDataFromJson(JsonConvert.SerializeObject(Packs.CreateTransactionPack(SocketClientID, transactionInteraction)));
 
-        public void SendDataFromJson(string sendjson)
+        public async void SendDataFromJson(string sendjson)
         {
             try
             {
@@ -64,10 +120,10 @@ namespace StarkSharp.Fusion.Sharpion.Dotnet
 
             try
             {
-                if (ws.ReadyState == WebSocketState.Open)
+                if (_ws != null && _ws.State == WebSocketState.Open)
                 {
                     byte[] dataToSend = Encoding.UTF8.GetBytes(sendjson);
-                    ws.Send(dataToSend);
+                    await _ws.SendAsync(new ArraySegment<byte>(dataToSend), WebSocketMessageType.Text, true, CancellationToken.None);
                 }
             }
             catch (Exception ex) // General exception for any WebSocket related error.

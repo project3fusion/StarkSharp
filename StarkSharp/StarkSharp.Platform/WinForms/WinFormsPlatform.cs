@@ -1,25 +1,9 @@
-﻿
-using StarkSharp.Platforms.Winforms.RPC;
+
+using StarkSharp.Core.Interfaces;
 
 namespace StarkSharp.Platforms.Winforms
 {
-    public class WinFormsPlatform : Platform
+    public class WinFormsPlatform : WinFormPlatform
     {
-        public static WinFormsPlatform New(PlatformConnectorType platformType)
-        {
-            WinFormsPlatform platform;
-
-            switch (platformType)
-            {
-                case PlatformConnectorType.RPC:
-                    platform = new WinFormRpcPlatform();
-                    break;
-                default:
-                    platform = new WinFormsPlatform();
-                    break;
-            }
-
-            return platform;
-        }
     }
 }

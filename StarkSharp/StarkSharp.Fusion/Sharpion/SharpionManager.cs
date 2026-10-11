@@ -1,18 +1,16 @@
 using StarkSharp.Connectors.Components;
+using StarkSharp.Core.Interfaces;
 using StarkSharp.Fusion.Sharpion.Manager.IonPlatforms;
 using StarkSharp.Fusion.Sharpion.Manager.IonPlatforms.Dotnet;
-using StarkSharp.Fusion.Sharpion.Manager.IonPlatforms.Unity;
 using System;
 using System.Numerics;
-using static StarkSharp.Platforms.Platform;
 
 namespace StarkSharp.Fusion.Sharpion.Manager
 {
     public class SharpionManager
     {
-
         IonPlatform IonPlatform;
-        public SharpionManager(IonPlatform platform) {this.IonPlatform = platform;}
+        public SharpionManager(IonPlatform platform) { this.IonPlatform = platform; }
 
         public static SharpionManager New(PlatformName name)
         {
@@ -23,11 +21,8 @@ namespace StarkSharp.Fusion.Sharpion.Manager
                 case PlatformName.Dotnet:
                     platform = new IonDotnet();
                     break;
-                case PlatformName.Unity:
-                    platform = new IonUnity();
-                    break;
                 default:
-                    throw new NotSupportedException($"Platform '{name}' is not supported.");
+                    throw new NotSupportedException($"Platform '{name}' is not supported in .NET SDK.");
             }
 
             return new SharpionManager(platform);
